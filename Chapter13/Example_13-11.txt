@@ -1,0 +1,3 @@
+$moduleFolder = 'C:\Scripts\ProDSC'
+$moduleName = 'ProDSC'
+New-FileCatalog -Path $moduleFolder -CatalogFilePath "$moduleFolder\$moduleName.cat" -CatalogVersion 1.0

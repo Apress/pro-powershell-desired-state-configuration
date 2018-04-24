@@ -1,0 +1,1 @@
+Get-AzureRmAutomationDscOnboardingMetaconfig -ResourceGroupName $resourceGroupName -AutomationAccountName 'ProDscAA' -ComputerName S16-01, S16-02 -OutputFolder C:\Scripts -Verbose

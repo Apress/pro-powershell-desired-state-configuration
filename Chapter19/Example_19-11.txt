@@ -1,0 +1,31 @@
+#Set AWS Credentials
+Set-AWSCredential -AccessKey 'accessKey' -SecretKey 'secretKey'
+
+#Set Default AWS region
+Set-DefaultAwsRegion -Region us-east-2
+
+#Validate a CFN template
+$templateBody = Get-Content -Path .\cfnTemplate.json -raw
+Test-CFNTemplate -TemplateBody $templateBody
+
+#Deploy a CFN template
+$parameters = @( 
+    @{
+        ParameterKey = "KeyPairName"
+        ParameterValue = "DSCInstance"
+    },
+    @{
+        ParameterKey = "WebserverInstanceType"
+        ParameterValue = "t2.micro"
+    },
+    @{
+        ParameterKey = "BootstrapperScript"
+        ParameterValue = "https://github.com/rchaganti/cfnDSC/raw/master/WebServerDSCBootstrap.zip"
+    },
+    @{
+        ParameterKey = "WebserverImageId"
+        ParameterValue = "ami-89cce7ec"
+    }
+)
+
+New-CfnStack -StackName DscCfnStack -TemplateBody $templateBody -Parameter $parameters -Verbose

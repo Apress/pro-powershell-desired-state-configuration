@@ -1,0 +1,66 @@
+enum Ensure 
+{ 
+    Absent 
+    Present 
+}
+
+[DscResource()]
+class HostsFile
+{
+    [DscProperty(Key)]
+    [String]
+    $HostName
+
+    [DscProperty(Mandatory = $true)]
+    [String]
+    $IPAddress
+
+    [DscProperty()]
+    [Ensure]
+    $Ensure = 'Present'
+
+    [Bool] Test()
+    {
+
+    }
+
+    [Void] Set()
+    {
+
+    }
+
+    [HostsFile] Get()
+    {
+        
+    }
+}
+
+class NewResource
+{
+    [DscProperty(Key)]
+    [String]
+    $Property1
+
+    [DscProperty(Mandatory = $true)]
+    [String]
+    $Property2
+
+    [DscProperty()]
+    [Ensure]
+    $Ensure = 'Present'
+
+    [Bool] Test()
+    {
+
+    }
+
+    [Void] Set()
+    {
+
+    }
+
+    [HostsFile] Get()
+    {
+        
+    }
+}

@@ -1,0 +1,61 @@
+@{
+    AllNodes =
+    @(
+        @{
+            NodeName = '*'
+            ScriptDestinationPath = 'C:\Scripts'
+            OSSourcePath = '\\S16-JB\Share\S16OS\Sources\Sxs'
+        }
+        @{
+            NodeName = 'WebServer01'
+            Role = 'WebServer'
+            Environment = 'Production'
+        }
+        @{
+            NodeName = 'WebServer02'
+            Role = 'WebServer'
+            Environment = 'Production'            
+        }
+        @{
+            NodeName = 'WebServer03'
+            Role = 'WebServer'
+            Environment = 'Development'            
+        }
+        @{
+            NodeName = 'WebServer04'
+            Role = 'WebServer'
+            Environment = 'Development'            
+        }
+        @{
+            NodeName = 'DBServer01'
+            Role = 'DBServer'
+            Environment = 'Production'            
+        }
+        @{
+            NodeName = 'DBServer02'
+            Role = 'DBServer'
+            Environment = 'Development'            
+        }
+    )
+
+    EnvironmentData = 
+    @{
+        'WebServer' = @{
+            'Production' = @{
+                'ScriptsPath' = '\\S16-JB\Share\Websetup-Prod.zip'
+            }
+            'Development' = @{
+                'ScriptsPath' = '\\S16-JB\Share\Websetup-Dev.zip'
+            }
+        }
+
+        'DBServer' = @{
+            'Production' = @{
+                'ScriptsPath' = '\\S16-JB\Share\DBsetup-Prod.zip'
+            }
+            'Development' = @{
+                'ScriptsPath' = '\\S16-JB\Share\DBsetup-Dev.zip'
+            }
+        }
+    }
+}

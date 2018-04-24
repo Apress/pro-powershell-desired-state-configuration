@@ -1,0 +1,7 @@
+WaitForAny ApplicationVApp
+{
+    NodeName = @('APPSvc01','APPSvc02')
+    ResourceName = '[cAppService]AppServerInstall'
+    RetryIntervalSec = 30
+    RetryCount = 10
+}

@@ -1,0 +1,15 @@
+Configuration FirstConfiguration
+{
+    Import-DscResource -ModuleName PSDscResources
+    Node localhost
+    {
+        Archive FirstArchiveConfiguration
+        {
+            Path = 'C:\Scripts\test.zip'
+            Destination = 'C:\Demo'
+            Ensure = 'Present'
+        }
+    }
+}
+
+FirstConfiguration

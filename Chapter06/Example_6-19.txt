@@ -1,0 +1,28 @@
+Configuration ProDscHosts
+{
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String]
+        $HostName,
+
+        [Parameter(Mandatory = $true)]
+        [String]
+        $IPAddress
+
+    )
+    
+    Import-DscResource -ModuleName ProDsc -Name HostsFile -ModuleVersion 1.0.0.0
+
+    Node Localhost
+    {
+        HostsFile DemoHosts
+        {
+            HostName = $HostName
+            IPAddress = $IPAddress
+            Ensure = 'Present'
+        }
+    }
+}
+
+ProDscHosts -HostName 'testServer10' -IPAddress '10.10.10.10' -Verbose

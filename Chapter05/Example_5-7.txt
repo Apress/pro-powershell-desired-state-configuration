@@ -1,0 +1,47 @@
+$configurationData =
+@{
+    AllNodes =
+    @(
+        @{
+            NodeName = '*'
+            DestinationFile = 'C:\Scripts\Unattend.xml'
+            PsDscAllowPlainTextPassword = $true
+            PSDscAllowDomainUser = $true
+        },
+        @{
+            NodeName = 'S16-01'
+            SourceFile = '\\S16-JB\Share\S16-01.xml'            
+        },
+
+        @{
+            NodeName = 'S16-02'
+            SourceFile = '\\S16-JB\Share\S16-02.xml'
+        }
+    )
+}
+
+Configuration FileCopyConfiguration
+{
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [pscredential]
+        $Credential
+    )
+
+    Import-DscResource -ModuleName PSDesiredStateConfiguration
+
+    Node $AllNodes.NodeName
+    {
+        File FileCopyDemo
+        {
+            SourcePath = $Node.SourceFile
+            DestinationPath = $Node.Destinationfile
+            Type = 'File'
+            Credential = $Credential
+            Force = $true
+        }
+    }
+}
+
+FileCopyConfiguration -Credential (Get-Credential) -ConfigurationData $configurationData

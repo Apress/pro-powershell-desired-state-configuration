@@ -1,0 +1,1 @@
+Import-AzureRmAutomationDscConfiguration -AutomationAccountName 'ProDscAA' -ResourceGroupName $resourceGroupName -SourcePath C:\Scripts\GCE\webserver.ps1 -Published

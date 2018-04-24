@@ -1,0 +1,12 @@
+Configuration FirstConfiguration
+{
+    Import-DscResource -ModuleName xNetworking -ModuleVersion 5.0.0.0
+
+    xHostsFile HostsFileConfiguration
+    {
+        IPAddress = '10.0.0.1'
+        HostName = 'TestHost10'
+    }
+}
+
+FirstConfiguration

@@ -1,0 +1,37 @@
+PS C:\scripts\ProDSC\Tests\Unit> Invoke-Pester -CodeCoverage C:\scripts\ProDSC\DSCResources\HostsFile\HostsFile.psm1
+    
+Describing Unit tests for the HostsFile resource
+    Context A hosts file entry does not exist. It should.
+VERBOSE: Checking if hosts file entry exists for TestServer102 and 172.16.102.102 or not.
+VERBOSE: Hosts file entry for TestServer102 and 172.16.102.102 does not exist.
+    [+] Get function should return Ensure as absent. 707ms
+VERBOSE: Checking if the hosts file entry for TestServer102 and 172.16.102.102 exists or not.
+VERBOSE: Hosts file entry  for TestServer102 and 172.16.102.102 does not exist while it should; it must be added.
+    [+] Test function should return false. 81ms
+VERBOSE: Creating hosts file entry for TestServer102 and 172.16.102.102.
+    [+] Set function should add the hosts file entry. 89ms
+    Context A hosts file entry exists as it should.
+VERBOSE: Checking if hosts file entry exists for TestServer102 and 172.16.102.102 or not.
+VERBOSE: Hosts file entry for TestServer102 and 172.16.102.102 exists.
+    [+] Get function should return Ensure as present. 130ms
+VERBOSE: Checking if the hosts file entry for TestServer102 and 172.16.102.102 exists or not.
+VERBOSE: Hosts file entry for TestServer102 and 172.16.102.102 exists for the given parameters; nothing to configure.
+    [+] Test function should return true. 75ms
+    Context A hosts file entry exists and it should not.
+VERBOSE: Checking if hosts file entry exists for TestServer102 and 172.16.102.102 or not.
+VERBOSE: Hosts file entry for TestServer102 and 172.16.102.102 exists.
+    [+] Get function should return Ensure as present. 269ms
+VERBOSE: Checking if the hosts file entry for TestServer102 and 172.16.102.102 exists or not.
+VERBOSE: Hosts file entry for TestServer102 and 172.16.102.102 exists while it should not; it must be removed.
+    [+] Test function should return false. 115ms
+VERBOSE: Removing hosts file entry for TestServer102 and 172.16.102.102.
+    [+] Set function should call Set-Content only once. 83ms
+    Context A hosts file entry does not exist and it should not.
+VERBOSE: Checking if hosts file entry exists for TestServer102 and 172.16.102.102 or not.
+VERBOSE: Hosts file entry for TestServer102 and 172.16.102.102 does not exist.
+    [+] Get function should return Ensure as absent. 408ms
+VERBOSE: Checking if the hosts file entry for TestServer102 and 172.16.102.102 exists or not.
+VERBOSE: Hosts file entry for TestServer102 and 172.16.102.102 does not exist; nothing to configure.
+    [+] Test function should return true. 544ms
+Tests completed in 2.51s
+Passed: 10 Failed: 0 Skipped: 0 Pending: 0 Inconclusive: 0 

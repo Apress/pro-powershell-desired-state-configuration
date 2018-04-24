@@ -1,0 +1,17 @@
+Configuration DemoWebServer
+{
+    Import-DscResource -ModuleName PSDesiredStateConfiguration -ModuleVersion 1.1
+
+    Node S16-01
+    {
+        WindowsFeature DemoWebServer
+        {
+            Name = 'Web-Server'
+            IncludeAllSubFeature = $true
+            Ensure = 'Present'
+        }
+    }
+}
+
+DemoWebServer -OutputPath .\DemoWebServer
+Publish-DscConfiguration -Path .\DemoWebServer -Verbose

@@ -1,0 +1,1 @@
+Publish-DscConfiguration -Path .\WebServerConfiguration -ComputerName S16-01 -Verbose

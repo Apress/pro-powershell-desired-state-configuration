@@ -1,0 +1,25 @@
+Configuration DSCRunDemo
+{
+    Import-DscResource -ModuleName PSDesiredStateConfiguration
+
+    Node S16-01
+    {
+        Script DSCRunDemo
+        {
+            SetScript = 
+            { 
+                Write-Verbose -Message $(whoami)
+            }            
+            TestScript = 
+            {    
+                return $false
+            }        
+            GetScript =
+            {
+                return @{}
+            }  
+        }      
+    }
+}
+
+DSCRunDemo

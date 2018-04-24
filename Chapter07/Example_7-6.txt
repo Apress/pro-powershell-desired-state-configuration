@@ -1,0 +1,5 @@
+Invoke-DscResource -Name HostsFile `
+                    -Method Set `
+                    -ModuleName ProDsc `
+                    -Property $properties `
+                    -Verbose

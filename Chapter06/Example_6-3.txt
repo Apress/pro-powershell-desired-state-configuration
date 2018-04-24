@@ -1,0 +1,17 @@
+Configuration HyperVNode
+{
+    Import-DscResource -ModuleName PSDesiredStateConfiguration -ModuleVersion 1.1
+
+    WindowsFeatureSet HyperVClusterNode
+    {
+        Name = @(
+            'Hyper-V',
+            'Failover-Clustering',
+            'Data-Center-Bridging',
+            'RSAT-Hyper-V-Tools',
+            'RSAT-Clustering'
+        )
+        IncludeAllSubFeature = $true
+        Ensure = 'Present'
+    }
+}

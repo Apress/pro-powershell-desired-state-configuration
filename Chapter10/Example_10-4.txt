@@ -1,0 +1,23 @@
+Configuration FirewallConfig
+{
+    Import-DSCResource -ModuleName xNetworking -Name xFirewall -ModuleVersion 5.3.0.0
+
+    Node Localhost
+    {
+        xFirewall Firewall
+        {
+            Name                  = 'SQLDBEngineFWRule'
+            DisplayName           = 'Firewall Rule SQL Database Engine inbound'
+            Group                 = 'SQL Firewall Rule Group'
+            Ensure                = 'Present'
+            Enabled               = 'True'
+            Profile               = ('Domain', 'Private')
+            Direction             = 'Inbound'
+            LocalPort             = '1433'
+            Protocol              = 'TCP'
+            Description           = 'Firewall Rule SQL Database Engine inbound - TCP 1433'
+        }
+    }
+}
+
+FirewallConfig

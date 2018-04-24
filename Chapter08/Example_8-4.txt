@@ -1,0 +1,29 @@
+Configuration ScriptDemo
+{
+    Node ('S16-1', 'S16-2')
+    {
+        Script ScriptDemo
+        {
+            GetScript = {
+                @{
+                    GetScript = $GetScript
+                    SetScript = $SetScript
+                    TestScript = $TestScript
+                    Result = 'TestScript'
+                }
+            }   
+
+            SetScript = {
+                Write-Verbose 'Sleeping for 50 seconds'
+                Start-Sleep 50
+                Write-Verbose 'Completed Script task'
+            }
+
+            TestScript = {
+                $false
+            }
+        }
+    }
+}
+
+ScriptDemo

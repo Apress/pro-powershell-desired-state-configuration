@@ -1,0 +1,38 @@
+properties {
+    $resourceName           = 'HostsFile'
+    $moduleScript           = "$PSScriptRoot\DSCResources\$resourceName\$resourceName.psm1"
+    $testFolder             = "$PSScriptRoot\Tests"
+    $unitTestsFolder        = "$testFolder\Unit"
+    $integrationTestsFolder = "$testFolder\Integration"
+    $deployFile             = '.\deployment.yml'
+}
+
+task default -depends StyleCheck, UnitTest, IntegrationTest, DeployModule
+
+task StyleCheck {
+    $sCheck = Invoke-ScriptAnalyzer -Path $moduleScript -Severity 'Error' -Recurse -Verbose:$false
+    if ($sCheck) {
+        $sCheck
+        throw 'PS Script Analyzer returned one or more errors. Release pipeline execution will halt.'
+    }
+}
+
+task UnitTest {
+    $unitTestResults = Invoke-Pester -Path $unitTestsFolder -PassThru
+    if ($unitTestResults.FailedCount -gt 0) {
+        $unitTestResults | Format-List
+        throw 'Module Unit tests returned one or more errors. Release pipeline execution will halt.'
+    }
+}
+
+task IntegrationTest {
+    $intTestResults = Invoke-Pester -Path $integrationTestsFolder -PassThru
+    if ($intTestResults.FailedCount -gt 0) {
+        $intTestResults | Format-List
+        throw 'Module integration tests returned one or more errors. Release pipeline execution will halt.'
+    }
+}
+
+task DeployModule -depends StyleCheck, UnitTest, IntegrationTest {
+    Invoke-PSDeployment -Path $deployFile -Force -Verbose
+}

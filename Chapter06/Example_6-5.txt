@@ -1,0 +1,29 @@
+Configuration DisableLoopbackCheck
+{
+    Param
+    (
+        [Parameter(Mandatory = $true)]
+        [Boolean]
+        $Enable
+    )
+
+    Import-DscResource -ModuleName PSDesiredStateConfiguration -ModuleVersion 1.1
+    
+    if ($Enable)
+    {
+        $Ensure = 'Present'
+    }
+    else
+    {
+        $Ensure = 'Absent'
+    }
+    
+    Registry DefaultDomainName
+    {	        
+        Key = 'HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa'
+        ValueName = 'DisableLoopbackCheck'
+        ValueData = 1
+        ValueType = 'DWord'
+        Ensure = $Ensure
+    }
+}

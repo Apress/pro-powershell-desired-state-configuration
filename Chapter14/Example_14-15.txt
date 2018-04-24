@@ -1,0 +1,42 @@
+[CmdletBinding()]
+param
+(
+    [Parameter(Mandatory)]
+    [String]
+    $ModuleFolder
+)
+
+if (-not(Test-Path -Path $ModuleFolder))
+{
+    throw "$ModuleFolder not found"
+}
+
+$moduleName = (Get-Item -Path $ModuleFolder).BaseName
+
+#Get the module version from manifest
+$manifest = Import-PowerShellDataFile -Path "$ModuleFolder\$moduleName.psd1"
+$moduleVersion = $manifest.ModuleVersion
+
+#Package the folder
+$parentPath = Split-Path -Path $ModuleFolder -Parent
+$archivePath = "$parentPath\$($moduleName)_$($moduleVersion).zip"
+
+if (Get-ChildItem -Path "$ModuleFolder\DscResource.Tests")
+{
+    #Copy module folder files to temp location to eliminate DSCResources.Tests folder
+    $null = New-Item -Path "$($env:Temp)\$($moduleName)" -ItemType Directory -Force
+
+    Get-ChildItem -Path .\ProDsc | % { 
+        Copy-Item $_.fullname "$($env:Temp)\$($moduleName)" -Recurse -Force -Exclude 'DSCResource.Tests' 
+    }
+}
+
+Compress-Archive -Path "$($env:Temp)\$($moduleName)\*" -DestinationPath $archivePath -Force
+
+$checksumPath = "$parentPath\$($moduleName)_$($moduleVersion).zip.checksum"
+New-DscChecksum -Path $archivePath -OutPath $parentPath -Force
+
+#Clean up temp folder
+Remove-Item -Path "$($env:Temp)\$($moduleName)" -Recurse -Force
+
+return @($archivePath, $checksumPath)

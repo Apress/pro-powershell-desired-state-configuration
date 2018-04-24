@@ -1,0 +1,26 @@
+Context 'A hosts file entry exists as it should.' {
+
+    $testParameters = @{
+        HostName  = 'TestServer102'
+        IPAddress = '172.16.102.102'
+        Verbose   = $true
+    }
+
+    Mock -CommandName Get-Content -MockWith {
+        return @(
+            '# An example of a host file',
+            '',
+            '127.0.0.1  localhost',
+            "$($testParameters.IPAddress)         $($testParameters.HostName)",
+            ''
+        )
+    }
+
+    It 'Get function should return Ensure as present.' {
+        (Get-TargetResource @testParameters).Ensure | Should Be 'Present'
+    }
+
+    It 'Test function should return true.' {
+        Test-TargetResource @testParameters | Should Be $true
+    }
+}

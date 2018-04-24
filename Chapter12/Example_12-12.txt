@@ -1,0 +1,1 @@
+$hostEntry = "`n$($this.IPAddress)`t$($this.HostName)" 

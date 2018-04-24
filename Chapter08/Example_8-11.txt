@@ -1,0 +1,45 @@
+[DSCLocalConfigurationManager()]
+configuration oDataHTTPSPullClient
+{
+    param
+    (
+        [Parameter()]
+        [String]
+        $NodeName = 'localhost',
+
+        [Parameter(Mandatory = $true)]
+        [String]
+        $RegistrationKey,
+
+        [Parameter(Mandatory = $true)]
+        [String]
+        $PullSvcEndpoint,
+
+        [Parameter(Mandatory = $true)]
+        [String[]]
+        $ConfigNames
+    )
+
+    Node $NodeName
+    {
+        Settings
+        {
+            RefreshMode        = 'Pull'
+        }
+
+        ConfigurationRepositoryWeb HTTPSPullSvc
+        {
+            ServerURL          = $PullSvcEndpoint
+            RegistrationKey    = $RegistrationKey
+            ConfigurationNames = $ConfigNames
+        }
+
+        ResourceRepositoryWeb HTTPSPullSvc
+        {
+            ServerURL          = $PullSvcEndpoint
+            RegistrationKey    = $RegistrationKey
+        }
+    }
+}
+
+oDataHTTPSPullClient -RegistrationKey '5a81ccf0-ae70-4ddf-8c3b-6e9fb54a3979' -PullSvcEndpoint 'https://s16-pull-02.psdsc.lab:8080/PSDSCPullServer.svc/' -ConfigNames @('OSConfig')

@@ -1,0 +1,1 @@
+Find-Module -Name cWindowsOS -DscResource cDiskImage

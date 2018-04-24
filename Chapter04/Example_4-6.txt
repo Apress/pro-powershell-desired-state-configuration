@@ -1,0 +1,1 @@
+Find-Module -Name xNetworking | Install-Module -Scope CurrentUser -Force

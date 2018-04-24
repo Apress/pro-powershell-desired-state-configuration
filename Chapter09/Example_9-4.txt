@@ -1,0 +1,1 @@
+$AllDscLogs.ForEach{$_.Properties[0].Value} | Select-Object -Unique

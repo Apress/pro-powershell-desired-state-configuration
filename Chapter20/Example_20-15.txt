@@ -1,0 +1,2 @@
+docker stop $container.Id
+docker commit $container.Id myimages/servercoredsc

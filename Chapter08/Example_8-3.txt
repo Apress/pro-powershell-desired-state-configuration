@@ -1,0 +1,1 @@
+Start-DscConfiguration -ComputerName S16-01 -UseExisting -Wait -Verbose

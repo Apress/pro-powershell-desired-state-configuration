@@ -1,0 +1,6 @@
+$registrationSplat = @{
+    Name  = 'ProDSCJEA'
+    Path  = $sessionSplat.Path
+    Force = $true
+}
+Register-PSSessionConfiguration @registrationSplat

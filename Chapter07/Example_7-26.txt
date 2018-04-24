@@ -1,0 +1,1 @@
+Invoke-Pester -CodeCoverage C:\scripts\ProDSC\DSCResources\HostsFile\HostsFile.psm1

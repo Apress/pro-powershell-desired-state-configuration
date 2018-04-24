@@ -1,0 +1,1 @@
+$reports = Get-DscReport -NodeName S16-01, S16-02 -ReportEndpoint 'https://s16-pull-01:8080/PSDSCPullServer.svc' -UseTLS2

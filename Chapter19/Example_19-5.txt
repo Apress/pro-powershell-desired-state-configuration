@@ -1,0 +1,5 @@
+AWSEC2MetaConfig -RegistrationUrl 'https://cid-agentservice-prod-1.azure-automation.net/accounts/78373be3-84aa-432b-8be6-5dcbeae5eff2' `
+                    -RegistrationKey 'keEiP98x6pNKaGwi1pJITEgzNgcneDQZwBxR+J5IjKZqPf6t19KGgVRI2beAvVPFtypVQNEb0mKJtRq9pSX+2w==' `
+                    -ConfigurationNames 'WebServer.localhost' `
+                    -NodeName 'ec2-13-59-154-158.us-east-2.compute.amazonaws.com'
+Set-DscLocalConfigurationManager -Path .\AWSEC2MetaConfig -Verbose -Credential (Get-Credential) -Force

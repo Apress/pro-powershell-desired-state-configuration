@@ -1,0 +1,15 @@
+Configuration WaitErrorDemo
+{
+    Import-DscResource -ModuleName PSDesiredStateConfiguration
+
+    Node localhost
+    {
+        WaitForAny AudioService
+        {
+            NodeName = 'CNODE01'
+            ResourceName = '[Service]AudioService'
+        }
+    }
+}
+
+WaitErrorDemo

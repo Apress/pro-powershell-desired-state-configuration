@@ -1,0 +1,11 @@
+function Test-TargetResource
+{
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String]
+        $DummyKey
+    )
+
+    return $false
+}

@@ -1,0 +1,47 @@
+$certPath = 'C:\PublicKeys\S16-01.cer'
+$cert = [System.Security.Cryptography.X509Certificates.X509Certificate2]::new()
+$cert.Import($certPath) 
+
+$configurationData =
+@{
+    AllNodes =
+    @(
+        @{
+            NodeName = 'S16-01'
+            CertificateFile = $certPath
+            Thumbprint = $cert.Thumbprint
+            PsDscAllowDomainUser = $true
+        }
+    )
+}
+Configuration DSCRunDemo
+{
+    param
+    (
+        [Parameter(Mandatory)]
+        [psCredential] $Credential
+    )
+    
+    Import-DscResource -ModuleName PSDesiredStateConfiguration
+    
+    Node $AllNodes.NodeName
+    {
+        Script DSCRunDemo
+        {
+            SetScript =
+            {
+                Write-Verbose -Message $(whoami)
+            }
+            TestScript =
+            {
+                return $false
+            }
+            GetScript =
+            {
+                return @{}
+            }
+            PSDscRunAsCredential = $Credential
+        }
+    }
+}
+DSCRunDemo -configurationData $configurationData -Credential $Credential 

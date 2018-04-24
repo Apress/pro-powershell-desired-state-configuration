@@ -1,0 +1,188 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "A template to deploy a web server using DSC bootstrap from a Github repository.",
+    "Parameters": {
+    "BootstrapperScript": {
+        "Description": "The URL to a ZIP file containing the PowerShell script package to bootstrap EC2 instance in this CloudFormation template.",
+        "Type": "String",
+        "Default": "https://github.com/rchaganti/cfnDSC/raw/master/WebServerDSCBootstrap.zip"
+    },
+    "KeyPairName": {
+        "Description": "The EC2 key pair used to launch web instance",
+        "Type": "AWS::EC2::KeyPair::KeyName",
+        "Default": "DSCInstance"
+    },
+    "WebserverImageId": {
+        "Description": "The EC2 AmiId to use for web",
+        "Type": "String",
+        "Default": "ami-89cce7ec"
+    },
+    "WebserverInstanceType": {
+        "Description": "The EC2 instance type to use for web",
+        "Type": "String",
+        "Default": "t2.micro"
+    }
+    },
+    "Resources": {
+    "WebSecurityGroup": {
+        "Type": "AWS::EC2::SecurityGroup",
+        "Properties": {
+        "GroupDescription": "Allow inbound HTTP, RDP, and WinRM HTTP",
+        "SecurityGroupIngress": [
+            {
+            "IpProtocol": "tcp",
+            "FromPort": "80",
+            "ToPort": "80",
+            "CidrIp": "0.0.0.0/0"
+            },
+            {
+            "IpProtocol": "tcp",
+            "FromPort": "3389",
+            "ToPort": "3389",
+            "CidrIp": "0.0.0.0/0"
+            },
+            {
+            "IpProtocol": "tcp",
+            "FromPort": "5985",
+            "ToPort": "5985",
+            "CidrIp": "0.0.0.0/0"
+            }
+        ]
+        }
+    },
+    "DSCWebServer": {
+        "Type": "AWS::EC2::Instance",
+        "Metadata": {
+        "AWS::CloudFormation::Init": {
+            "config": {
+            "sources": {
+                "c:\\cfn\\Zephyr\\Scripts": {
+                "Ref": "BootstrapperScript"
+                }
+            },
+            "files": {
+                "c:\\cfn\\cfn-hup.conf": {
+                "content": {
+                    "Fn::Join": [
+                    "",
+                    [
+                        "[main]\n",
+                        "stack=",
+                        {
+                        "Ref": "AWS::StackId"
+                        },
+                        "\n",
+                        "region=",
+                        {
+                        "Ref": "AWS::Region"
+                        },
+                        "\n"
+                    ]
+                    ]
+                }
+                },
+                "c:\\cfn\\hooks.d\\cfn-auto-reloader.conf": {
+                "content": {
+                    "Fn::Join": [
+                    "",
+                    [
+                        "[cfn-auto-reloader-hook]\n",
+                        "triggers=post.update\n",
+                        "path=Resources.DSCWebServer.Metadata.AWS::CloudFormation::Init\n",
+                        "action=cfn-init.exe -v -s ",
+                        {
+                        "Ref": "AWS::StackId"
+                        },
+                        " -r DSCWebServer",
+                        " --region ",
+                        {
+                        "Ref": "AWS::Region"
+                        },
+                        "\n"
+                    ]
+                    ]
+                }
+                },
+                "c:\\cfn\\hooks.d\\cfn-teardown.conf": {
+                "content": {
+                    "Fn::Join": [
+                    "",
+                    [
+                        "[cfn-teardown-hook]\n",
+                        "triggers=post.remove\n",
+                        "path=Resources.DSCWebServer.Metadata.AWS::CloudFormation::Init\n",
+                        "action=powershell.exe -Command C:\\cfn\\Zephyr\\Scripts\\Teardown.ps1\n"
+                    ]
+                    ]
+                }
+                }
+            },
+            "commands": {
+                "00-set-execution-policy": {
+                "command": "powershell.exe -Command Set-ExecutionPolicy Unrestricted -Force",
+                "waitAfterCompletion": "0"
+                },
+                "01-set-firewall-rule": {
+                "command": "powershell.exe -Command C:\\cfn\\Zephyr\\Scripts\\ConfigureFirewall.ps1",
+                "waitAfterCompletion": "0"
+                },
+                "02-configure-webserver": {
+                "command": "powershell.exe -Command C:\\cfn\\Zephyr\\Scripts\\WebServerDSCBootstrap.ps1",
+                "waitAfterCompletion": "0"
+                }
+            },
+            "services": {
+                "windows": {
+                "cfn-hup": {
+                    "enabled": "true",
+                    "ensureRunning": "true",
+                    "files": [
+                    "c:\\cfn\\cfn-hup.conf",
+                    "c:\\cfn\\hooks.d\\cfn-auto-reloader.conf"
+                    ]
+                }
+                }
+            }
+            }
+        }
+        },
+        "Properties": {
+        "ImageId": {
+            "Ref": "WebserverImageId"
+        },
+        "InstanceType": {
+            "Ref": "WebserverInstanceType"
+        },
+        "SecurityGroups": [
+            {
+            "Ref": "WebSecurityGroup"
+            }
+        ],
+        "KeyName": {
+            "Ref": "KeyPairName"
+        },
+        "UserData": {
+            "Fn::Base64": {
+            "Fn::Join": [
+                "",
+                [
+                "<script>\n",
+                "cfn-init.exe -v -s ",
+                {
+                    "Ref": "AWS::StackId"
+                },
+                " -r DSCWebServer",
+                " --region ",
+                {
+                    "Ref": "AWS::Region"
+                },
+                "\n",
+                "</script>"
+                ]
+            ]
+            }
+        }
+        }
+    }
+    }
+}

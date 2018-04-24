@@ -1,0 +1,10 @@
+$adminPassword = Read-Host -AsSecureString 
+$parameters = @{
+    ResourceGroupName = $resourceGroupName
+    TemplateFile      = 'C:\Scripts\prodscAzureVM.json'
+    AssetLocation     = 'https://raw.githubusercontent.com/rchaganti/ARMTemplates/master/'
+    AdminUserName     = 'Ravikanth'
+    AdminPassword     = $adminPassword
+}
+
+Test-AzureRmResourceGroupDeployment @parameters -Verbose

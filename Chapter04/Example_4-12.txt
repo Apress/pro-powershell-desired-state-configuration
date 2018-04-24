@@ -1,0 +1,14 @@
+instance of MSFT_Archive as $MSFT_Archive1ref
+{
+ResourceID = "[Archive]FirstArchiveConfiguration";
+    Path = "C:\\Scripts\\test.zip";
+    Ensure = "Present";
+    Destination = "C:\\Demo";
+    SourceInfo = "::4::5::Archive";
+    ModuleName = "PSDscResources";
+    ModuleVersion = "2.8.0.0";
+
+    ConfigurationName = "FirstConfiguration";
+
+};
+instance of OMI_ConfigurationDocument

@@ -1,0 +1,50 @@
+Configuration NestedConfiguration
+{
+    Node $AllNodes.NodeName
+    {
+        Switch ($Node.Role)
+        {
+            'Web'
+            {
+                IIS IISInstall { }
+
+                ServiceCheck SvcCheck
+                {
+                    Name = $ConfigurationData.WebConfig.ServiceToCheck
+                }
+
+                ArchiveUnpack ExtractZip
+                {
+                    Source = $ConfigurationData.WebConfig.SourcePath
+                    Destination = $Node.Destination
+                    Force = 'False'
+                }
+            }
+
+            'Database'
+            {
+                ServiceCheck SvcCheck
+                {
+                    Name = $ConfigurationData.DBConfig.ServiceToCheck          
+                }
+
+                ArchiveUnpack ExtractZip
+                {
+                    Source = $ConfigurationData.DBConfig.SourcePath
+                    Destination = $Node.Destination
+                    Force = 'True'
+                }
+            }
+
+            Default
+            {
+                ArchiveUnpack ExtractZip
+                {
+                    Source = $Node.SourcePath
+                    Destination = $Node.Destination
+                    Force = 'True'
+                }
+            }
+        }
+    }
+}

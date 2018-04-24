@@ -1,0 +1,1 @@
+Set-DscLocalConfigurationManager -Path C:\configurations -Verbose

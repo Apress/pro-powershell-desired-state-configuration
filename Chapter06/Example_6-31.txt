@@ -1,0 +1,8 @@
+[ClassVersion("1.0.0.0"), FriendlyName("VMNetworkAdapter")]
+class VMNetworkAdapter : OMI_BaseResource
+{
+    [Key, Description("Specifies the name of the VM.")] string Name;	    
+    [Required, Description("Specifies the name of the VM.")] string VMName;
+    [Required, Description("Specifies the VHDX path for the VM.")] string VMSwitch;
+    [Write, Description("Specifies if the VM should be present or absent."), ValueMap{"Present", "Absent"},Values{"Present", "Absent"}] string Ensure;
+};

@@ -1,0 +1,23 @@
+function Get-ByteArray
+{
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [string]
+        $ConfigurationMof,
+        
+        [Parameter()]
+        [switch]
+        $Local
+    )
+    
+    $configurationData = [Byte[]][System.IO.File]::ReadAllBytes((Resolve-Path $ConfigurationMof))
+    
+    if (-not $local)
+    {
+        $totalSize = [System.BitConverter]::GetBytes($configurationData.Length + 4)
+        $configurationData = $totalSize + $configurationData
+    }
+    
+    return $configurationData
+} 

@@ -1,0 +1,53 @@
+$configurationData =
+@{
+    AllNodes =
+    @(
+        @{
+            NodeName = 'S16-01'
+            PsDscAllowPlainTextPassword = $true
+            PSDscAllowDomainUser = $true                        
+        }
+    )
+}
+
+Configuration DSCRunDemo
+{   
+    Import-DscResource -ModuleName PSDesiredStateConfiguration
+
+    Node $AllNodes.NodeName
+    {
+        Script DSCRunDemo1
+        {
+            SetScript = 
+            { 
+                Write-Verbose -Message $(whoami)
+            }            
+            TestScript = 
+            {    
+                return $false
+            }        
+            GetScript =
+            {
+                return @{}
+            }
+        }
+
+        Script DSCRunDemo2
+        {
+            SetScript = 
+            { 
+                Write-Verbose -Message $(whoami)
+            }            
+            TestScript = 
+            {    
+                return $false
+            }        
+            GetScript =
+            {
+                return @{}
+            }
+        }                 
+    }
+}
+
+DSCRunDemo -ConfigurationData $configurationData -PsDscRunAsCredential (Get-Credential)

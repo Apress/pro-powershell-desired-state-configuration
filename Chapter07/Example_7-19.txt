@@ -1,0 +1,47 @@
+# Begin Testing
+try
+{   
+    InModuleScope 'HostsFile' {
+        Describe 'Unit tests for the HostsFile resource' {
+            BeforeEach {
+                Mock -CommandName Add-Content
+                Mock -CommandName Set-Content
+            }
+
+            Context 'A hosts file entry does not exist. It should.' {	
+                $testParameters = @{
+                    HostName  = 'TestServer102'
+                    IPAddress = '172.16.102.102'
+                    Verbose   = $true
+                }
+
+                Mock -CommandName Get-Content -MockWith {
+                    return @(
+                        '# An example of a host file',
+                        '',
+                        '172.16.102.1       Router',
+                        '127.0.0.1  localhost',
+                        ''
+                    )
+                }
+                
+                It 'Get function should return Ensure as absent.' {
+                    (Get-TargetResource @testParameters).Ensure | Should Be 'Absent'	
+                }
+    
+                It 'Test function should return false.' {
+                    Test-TargetResource @testParameters | Should Be $false
+                }
+    
+                It 'Set function should add the hosts file entry.' {
+                    Set-TargetResource @testParameters
+                    Assert-MockCalled -CommandName Add-Content -Times 1
+                }
+            }
+        }
+    }
+}
+finally
+{
+    Invoke-TestCleanup
+}

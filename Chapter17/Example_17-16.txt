@@ -1,0 +1,1 @@
+Register-AzureRmAutomationDscNode -AutomationAccountName 'ProDscAA' -AzureVMName avm-s16-05 -ResourceGroupName $resourceGroupName -NodeConfigurationName 'webserver.localhost'

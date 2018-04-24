@@ -1,0 +1,33 @@
+function Get-TargetResource
+{
+	[OutputType([Hashtable])]
+	param
+	(
+	    [parameter(Mandatory = $true)]
+	    [string]
+	    $HostName,
+	
+	    [parameter(Mandatory = $true)]
+	    [string]
+	    $IPAddress
+	)
+	    
+	$configuration = @{
+	    HostName = $hostName
+	    IPAddress = $IPAddress
+	}
+	
+	Write-Verbose -Message "Checking if hosts file entry exists for $HostName and $IPAddress or not."
+	if ((Get-Content "$env:windir\system32\drivers\etc\hosts" -ErrorAction SilentlyContinue) -match "^\s*$IPAddress\s+$HostName\s*$")
+	{
+	    Write-Verbose -Message "Hosts file entry for $HostName and $IPAddress exists."
+	    $configuration.Add('Ensure','Present')
+	}
+	else
+	{
+	    Write-Verbose "Hosts file entry for $HostName and $IPAddress does not exist."
+	    $configuration.Add('Ensure','Absent')
+	}
+	    
+	return $configuration
+}

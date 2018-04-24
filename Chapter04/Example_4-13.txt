@@ -1,0 +1,2 @@
+Find-Module -Name xNetworking -AllVersions
+Install-Module -Name xNetworking -RequiredVersion 4.1.0.0 -Force

@@ -1,0 +1,37 @@
+[DscLocalConfigurationManager()]
+Configuration AWSEC2MetaConfig
+{
+    param
+    (
+        [Parameter(Mandatory = $True)]
+        [String]
+        $RegistrationUrl,
+        
+        [Parameter(Mandatory = $True)]
+        [String]
+        $RegistrationKey,
+
+        [Parameter(Mandatory = $true)]
+        [String[]]
+        $ConfigurationNames,
+
+        [Parameter(Mandatory = $true)]
+        [String[]]
+        $NodeName
+    )
+
+    Node $NodeName
+    {
+        Settings
+        {
+            RefreshMode = 'PULL'
+        }
+
+        ConfigurationRepositoryWeb AADSCConfigWeb
+        {
+            ServerUrl = $RegistrationUrl
+            RegistrationKey = $RegistrationKey
+            ConfigurationNames = $ConfigurationNames
+        }
+    }
+}

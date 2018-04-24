@@ -1,0 +1,28 @@
+[DSCLocalConfigurationManager()]
+Configuration LCMSignatureValidation
+{
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String]
+        $CertificateStore,
+
+        [Parameter(Mandatory = $true)]
+        [String[]]
+        $Nodes
+    )
+
+    foreach ($node in $Nodes)
+    {
+        Node $node
+        {
+            SignatureValidation LCMSignatureValidation
+            {
+                TrustedStorePath = $CertificateStore           
+                SignedItemType = 'Configuration', 'Module' 
+            }
+        }
+    }
+}
+
+LCMSignatureValidation -Nodes @('S16-01','S16-02') -CertificateStore 'Cert:\LocalMachine\DSCStore'

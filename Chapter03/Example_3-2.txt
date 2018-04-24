@@ -1,0 +1,84 @@
+[CmdletBinding()]
+param
+(
+    [Parameter(Mandatory = $true)]
+    [String]
+    $ClassName,
+
+    [Parameter(Mandatory = $true)]
+    [String]
+    $Namespace,
+
+    [Parameter()]
+    [String]
+    $PropertyName
+)
+
+function extractProperty($cimProperty, $Namespace)
+{
+    $cimProperty | Select Name, CimType, `
+    @{
+        l='EmbeddedInstanceOf';e={
+            if ($_.Qualifiers.Name -contains 'EmbeddedInstance')
+            {
+                $embeddedClassName = $_.Qualifiers.Where({$_.Name -eq 'EmbeddedInstance'}).Value
+                $embeddedClass = Get-CimClass -ClassName $embeddedClassName -Namespace $Namespace
+                if ($embeddedClass.CimClassQualifiers['Abstract'].Value)
+                {
+                    $derivedClasses = (Get-CimClass -Namespace $Namespace).Where({ $_.CimSuperClassName -eq  $embeddedClassName}).CimClassName
+                    $derivedClasses
+                }
+                else
+                {
+                    $embeddedClassName
+                }
+            }
+        }
+    },
+    @{
+        l='IsReadyOnly';e={
+            $_.Qualifiers.Name -contains 'read'
+        }
+    },
+    @{
+        l='AllowedValues';e={
+            if ($_.Qualifiers.Name -contains 'ValueMap') {
+                $_.Qualifiers.Where({$_.Name -eq 'ValueMap'}).Value
+            }
+        }
+    },
+    @{
+        l='IsKey';e={
+            $_.Qualifiers.Name -contains 'Key'
+        }
+    }
+}
+
+try
+{
+    $cimClass = Get-CimClass -ClassName $ClassName -Namespace $Namespace -ErrorAction Stop
+
+    if ($PropertyName)
+    {
+        $cimProperty = $cimClass.CimClassProperties.Where({ $_.Name -eq $PropertyName })
+        if ($cimProperty)
+        {
+            extractProperty -cimProperty $cimProperty -Namespace $Namespace
+        }
+        else
+        {
+            throw "${PropertyName} does not exist in the CIM Class"   
+        }
+    }
+    else
+    {
+        foreach ($property in $cimClass.CimClassProperties)
+        {
+            extractProperty -cimProperty $property -Namespace $Namespace
+        }
+    }
+}
+catch
+{
+    Write-Error $_
+}

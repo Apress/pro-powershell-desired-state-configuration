@@ -1,0 +1,6 @@
+$ec2Name = 'amazonInstanceDnsName'
+
+$cimSessionOption = New-CimSessionOption -Protocol Wsman
+$cimSession = New-CimSession -SessionOption $cimSessionOption -ComputerName $ec2Name -Port 5985 -Credential (Get-Credential)
+
+Get-DscConfiguration -CimSession $cimSession

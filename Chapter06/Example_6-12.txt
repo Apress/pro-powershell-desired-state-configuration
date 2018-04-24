@@ -1,0 +1,7 @@
+[ClassVersion("1.0.0.0"), FriendlyName("HostsFile")]
+class HostsFile : OMI_BaseResource
+{
+    [Key, Description("Specifies the name of the host.")] string HostName;
+    [Key, Description("Specifies the IP address associated with the hostname.")] string IPAddress;
+    [Write, Description("Specifies if the host entry should be present or absent."), ValueMap{"Present", "Absent"},Values{"Present", "Absent"}] string Ensure;
+};

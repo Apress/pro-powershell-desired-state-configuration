@@ -1,0 +1,18 @@
+Configuration WebServerDemo
+{
+    WindowsFeature WebServer
+    {
+        Name = 'Web-Server'
+        IncludeAllSubFeature = $true
+        Ensure = 'Present'
+    }
+}
+
+if (-not (test-path C:\Temp))
+{
+    $null = New-Item -Path C:\temp -ItemType Directory
+}
+
+WebServerDemo -OutputPath C:\Temp\WebServerDemo
+
+Start-DscConfiguration -Path C:\Temp\WebServerDemo -Force -Wait -Verbose

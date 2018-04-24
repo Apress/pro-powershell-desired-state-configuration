@@ -1,0 +1,17 @@
+Configuration FileCopyConfiguration
+{
+    Import-DscResource -ModuleName PSDesiredStateConfiguration
+
+    Node S16-01
+    {
+        File FileCopyDemo
+        {
+            SourcePath = '\\S16-JB\Share\Unattend.xml'
+            DestinationPath = 'C:\Scripts\Unattend.xml'
+            Type = 'File'
+            Force = $true
+        }
+    }
+}
+
+FileCopyConfiguration

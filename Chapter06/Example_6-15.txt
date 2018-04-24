@@ -1,0 +1,33 @@
+function Set-TargetResource
+{
+	param
+	(
+	    [Parameter(Mandatory = $true)]
+	    [String]
+	    $HostName,
+	
+	    [Parameter(Mandatory = $true)]
+	    [String]
+	    $IPAddress,
+	
+	    [Parameter()]
+	    [ValidateSet('Present','Absent')]
+	    [String]
+	    $Ensure = 'Present'
+	)     
+	
+	$hostEntry = "`n${ipAddress}`t${hostName}"
+	
+	if ($Ensure -eq 'Present')
+	{
+	    Write-Verbose -Message "Creating hosts file entry for $HostName and $IPAddress."
+	    Add-Content -Path "$env:windir\system32\drivers\etc\hosts" -Value $hostEntry -Force -Encoding ASCII
+	}
+	else
+	{
+	    Write-Verbose -Message "Removing hosts file entry for $HostName and $IPAddress."
+	    $content = ((Get-Content "$env:windir\system32\drivers\etc\hosts") -notmatch "^\s*$")
+		$noMatchContent = ($content -notmatch "^\s*$IPAddress\s+$HostName\s*$")
+		$noMatchContent | Set-Content "$env:windir\system32\drivers\etc\hosts"
+	}
+}

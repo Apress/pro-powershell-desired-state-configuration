@@ -1,0 +1,1 @@
+Copy-Item .\OSConfig\* -Destination 'C:\Program Files\WindowsPowerShell\DscService\Configuration' 

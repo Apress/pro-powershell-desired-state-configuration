@@ -1,0 +1,28 @@
+Configuration DependentConfigurationDemo
+{
+    Import-DscResource -ModuleName PSDscResources -Name Registry
+
+    Node S16-01
+    {
+
+        File SetupScript
+        {
+            DestinationPath = 'C:\Scripts\setup.cmd'
+            Contents = 'C:\Windows\System32\Sysprep.exe /oobe /generalize /shutdown'
+            Type = 'File'
+            Ensure = 'Present'
+            DependsOn = '[Registry]OOBEInProgress'
+        }
+                
+        Registry OOBEInProgress
+        {
+            Key = 'HKEY_LOCAL_MACHINE\SYSTEM\Setup'
+            ValueName = 'OOBEInProgress'
+            ValueData = 0
+            ValueType = 'DWord'
+            Ensure = 'Present'
+        }
+    }
+}
+
+DependentConfigurationDemo -OutputPath C:\DependentConfigurationDemo

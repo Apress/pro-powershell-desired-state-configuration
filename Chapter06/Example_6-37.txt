@@ -1,0 +1,1 @@
+Invoke-Plaster -TemplatePath C:\Scripts\NewDscHighQualityResourceModule -DestinationPath C:\Scripts\NewHQRMModule -Force

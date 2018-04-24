@@ -1,0 +1,5 @@
+#Create a GCS bucket
+$bucketName = 'prodscscripts'
+$objectName = 'gcemetaconfig.ps1'
+New-GcsBucket -Name $bucketName -Project $projectID -DefaultBucketAcl ProjectPrivate -DefaultObjectAcl BucketOwnerFullControl
+$startupScript = New-GcsObject -Bucket $bucketName -ObjectName $objectName -File C:\scripts\GCE\GCeMetaConfig.ps1 -Force

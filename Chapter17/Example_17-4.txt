@@ -1,0 +1,2 @@
+Set-Item -Path WSMAN:\localhost\Client\TrustedHosts -Value *.cloudapp.azure.com -Force
+  

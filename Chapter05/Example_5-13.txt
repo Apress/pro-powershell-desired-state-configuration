@@ -1,0 +1,4 @@
+# AuthoringStation - Computer name of the system where you are authoring DSC configurations.
+# PublicKeyPath - A local folder on the authoring station to copy the public key files.
+
+New-DscCredentialCertificate -AuthoringStation S16-JB -PublicKeyPath C:\PublicKeys -Verbose

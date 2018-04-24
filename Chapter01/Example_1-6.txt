@@ -1,0 +1,3 @@
+$cimSessionOption = New-CimSessionOption -SkipCACheck -UseSsl
+
+$session = New-CimSession -SessionOption $cimSessionOption -ComputerName S16-01

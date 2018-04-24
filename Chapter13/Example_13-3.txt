@@ -1,0 +1,3 @@
+Copy-Item -Path '\\S16-01\C$\Windows\System32\configuration\pending.mof' -Destination C:\Windows\System32\Configuration\Pending.mof
+
+Start-DscConfiguration -UseExisting -Force -Verbose -Wait

@@ -1,0 +1,1 @@
+Get-Command -Module PSDesiredStateConfiguration -Noun *DscLocalConfiguration*

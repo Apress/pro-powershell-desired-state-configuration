@@ -1,0 +1,15 @@
+Configuration ServiceCheck {
+    param
+    (
+        [Parameter(Mandatory)]
+        [String] $Name
+    )
+    
+    Import-DscResource –ModuleName 'PSDesiredStateConfiguration'
+    
+    Service $Name
+    {
+        Name = $Name
+        State = 'Running'
+    }
+}

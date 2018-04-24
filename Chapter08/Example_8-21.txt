@@ -1,0 +1,39 @@
+[DSCLocalConfigurationManager()]
+configuration SMBPullClient
+{
+    param
+    (
+        [Parameter()]
+        [String]
+        $NodeName = 'localhost',
+
+        [Parameter(Mandatory = $true)]
+        [String]
+        $ConfigurationID,
+
+        [Parameter(Mandatory = $true)]
+        [String]
+        $PullSvcSMBShare
+    )
+
+    Node $NodeName
+    {
+        Settings
+        {
+            RefreshMode     = 'Pull'
+            ConfigurationID = $ConfigurationID
+        }
+
+        ConfigurationRepositoryShare SMBPullSvc
+        {
+            SourcePath = $PullSvcSMBShare
+        }
+
+        ResourceRepositoryShare SMBPullSvc
+        {
+            SourcePath = $PullSvcSMBShare
+        }
+    }
+}
+
+SMBPullClient -ConfigurationID '32549046-1f4f-4787-93c0-84cb6387f756' -PullSvcSMBShare '\\s16-pull-01\SMBpull'

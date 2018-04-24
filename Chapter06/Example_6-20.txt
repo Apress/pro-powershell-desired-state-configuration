@@ -1,0 +1,4 @@
+$env:PSModulePath (folder)
+    |- ResourceModuleName (folder)
+        |- ResourceModuleName.psm1 (file, required)
+        |- ResourceModuleName.psd1 (file, required)

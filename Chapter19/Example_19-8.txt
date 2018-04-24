@@ -1,0 +1,12 @@
+	Configuration WebServerDemoTearDown
+	{
+	    WindowsFeature WebServer
+	    {
+	        Name = 'Web-Server'
+	        IncludeAllSubFeature = $true
+	        Ensure = 'Absent'
+	    }
+	}
+	
+	WebServerDemo -OutputPath C:\Temp
+Start-DscConfiguration -Path C:\Temp\WebServerDemoTearDown -Force -Wait -Verbose

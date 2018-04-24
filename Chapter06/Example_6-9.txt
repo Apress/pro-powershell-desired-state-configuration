@@ -1,0 +1,14 @@
+Configuration SharePointDev
+{
+    Import-DscResource -ModuleName SharePointConfiguration -Name DisableLoopbackCheck
+
+    Node localhost
+    {	    
+        DisableLoopbackCheck SPLPCheck
+        {
+            Enable = $true
+        }
+    }
+}
+
+SharePointDev

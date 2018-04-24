@@ -1,0 +1,21 @@
+PS C:\scripts\ProDSC\Tests\Unit> Invoke-Pester
+    
+Cloning into 'C:\scripts\ProDSC\DSCResource.Tests'...
+remote: Counting objects: 946, done.
+remote: Compressing objects: 100% (4/4), done.
+Rremote: Total 946 (delta 0), reused 1 (delta 0), pack-reused 942
+Receiving objects: 100% (946/946), 340.51 KiB | 253.00 KiB/s, done.
+Resolving deltas: 100% (550/550)
+Resolving deltas: 100% (550/550), done.
+Describing Unit tests for the HostsFile resource
+    Context A hosts file entry does not exist. It should.
+VERBOSE: Checking if hosts file entry exists for TestServer102 and 172.16.102.102 or not.
+VERBOSE: Hosts file entry for TestServer102 and 172.16.102.102 does not exist.
+    [+] Get function should return Ensure as absent. 5s
+VERBOSE: Checking if the hosts file entry for TestServer102 and 172.16.102.102 exists or not.
+VERBOSE: Hosts file entry  for TestServer102 and 172.16.102.102 does not exist while it should; it must be added.
+    [+] Test function should return false. 179ms
+VERBOSE: Creating hosts file entry for TestServer102 and 172.16.102.102.
+    [+] Set function should add the hosts file entry. 156ms
+Tests completed in 5.34s
+Passed: 3 Failed: 0 Skipped: 0 Pending: 0 Inconclusive: 0

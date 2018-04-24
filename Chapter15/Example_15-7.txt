@@ -1,0 +1,3 @@
+git add *
+git commit -m 'Adding README.md'
+git push origin

@@ -1,0 +1,22 @@
+$projectID      = 'prodsc-gce-01'
+$allowedHTTP    = New-GceFirewallProtocol "tcp" -Port 5985
+$winrmhttpTag   = 'winrmhttp'
+
+$winrmhttpsTag  = 'winrmhttps'
+$allowedHTTPS   = New-GceFirewallProtocol "tcp" -Port 5986
+
+#Create the HTTP firewall rule
+Add-GceFirewall -Name 'allow-winrm-http' `
+                -AllowedProtocol $allowedHTTP `
+                -Project $projectID `
+                -Network "default" `
+                -SourceRange '0.0.0.0/0' `
+                -TargetTag $winrmhttpTag
+
+#Create the HTTPS firewall rule
+Add-GceFirewall -Name 'allow-winrm-https' `
+                -AllowedProtocol $allowedHTTPS `
+                -Project $projectID `
+                -Network "default" `
+                -SourceRange '0.0.0.0/0' `
+                -TargetTag $winrmhttpsTag

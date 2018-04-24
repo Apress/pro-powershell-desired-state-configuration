@@ -1,0 +1,15 @@
+Configuration FileCopyConfiguration
+{
+    Import-DscResource -ModuleName PSDesiredStateConfiguration
+
+    Node S16-01
+    {
+        File FileCopyInstance1
+        {
+            DestinationPath = 'C:\Scripts\build.tag'
+            Type = 'File'
+            Contents = 'Version:1.0.0.0'
+            Ensure = 'Present'
+        }
+    }
+}

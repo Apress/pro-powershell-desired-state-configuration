@@ -1,0 +1,3 @@
+Enter-PSSession -ComputerName S16-JB
+Enter-PSHostProcess -Id 2404 -AppDomainName DscPsPluginWkr_AppDomain
+Debug-Runspace -Id 4

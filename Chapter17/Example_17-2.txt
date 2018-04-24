@@ -1,0 +1,19 @@
+Configuration WebServer
+{
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [string]
+        $NodeName
+    )
+
+    Import-DscResource -Module PSDesiredStateConfiguration -ModuleVersion 1.1
+    Node $NodeName
+    {
+        WindowsFeature WebServer
+        {
+            Name = 'Web-Server'
+            Ensure = 'Present'
+        }
+    }
+}

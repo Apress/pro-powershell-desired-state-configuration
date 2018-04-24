@@ -1,0 +1,13 @@
+Configuration WebServer
+{   
+    Import-DscResource -ModuleName PSDesiredStateConfiguration -ModuleVersion 1.1
+
+    Node 'localhost'
+    {
+        WindowsFeature WebServer
+        {
+            Name = 'Web-Server'
+            Ensure = 'Present'
+        }
+    }
+}

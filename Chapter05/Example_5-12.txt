@@ -1,0 +1,39 @@
+function New-DscCredentialCertificate
+{
+    [CmdletBinding()]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String] $AuthoringStation,
+
+        [Parameter(Mandatory = $true)]
+        [String] $PublicKeyPath
+    )
+
+    #Generating a new certificate and exporting the public key
+    Write-Verbose -Message "Generating a new encryption certificate for computer ${env:ComputerName}"
+    $certificate = New-SelfSignedCertificate -Type DocumentEncryptionCertLegacyCsp -DnsName ${env:ComputerName} -HashAlgorithm SHA256
+    $null = $certificate | Export-Certificate -FilePath "${env:Temp}\${env:ComputerName}.cer" -Force
+
+    #Copying public key to authoring station
+    Write-Verbose -Message "Creating a new PS Session to ${AuthoringStation}"
+    $psSession = New-PSSession -ComputerName $AuthoringStation
+
+    #Ensure the target path exists on authoring station
+    Write-Verbose -Message "Copying public key to ${AuthoringStation}"
+    Invoke-Command -Session $psSession -ScriptBlock { 
+            if (-not (test-Path -Path $using:PublicKeyPath))
+            {
+                $null = New-Item -Path $using:PublicKeyPath -ItemType Directory -Force
+            }
+    }
+    try
+    {
+        Copy-Item -ToSession $psSession -Path "${env:Temp}\${env:ComputerName}.cer" -Destination "${PublicKeyPath}\${env:ComputerName}.cer" -Force
+    }
+
+    finally
+    {
+        Remove-PSSession -Session $psSession
+    }
+}

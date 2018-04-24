@@ -1,0 +1,2 @@
+Update-xDscEventLogStatus -ComputerName S16-01 -Channel Analytic -Status Enabled
+Update-xDscEventLogStatus -ComputerName S16-01 -Channel Debug -Status Enabled

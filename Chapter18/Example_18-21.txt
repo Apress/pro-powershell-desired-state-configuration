@@ -1,0 +1,8 @@
+$config = New-GceInstanceConfig 'prodscgce3' `
+    -MachineType 'n1-standard-1' `
+    -BootDiskImage $disk `
+    -Metadata @{ "windows-startup-script-url" = "gs://$bucketName/$objectName" } `
+    -Tag $winrmhttpsTag `
+    -ServiceAccount $svcAccount -Verbose
+        
+$gceInstance = $config | Add-GceInstance -Project $projectID

@@ -1,0 +1,9 @@
+$projectID = 'prodsc-gcp-01'	
+$disk = Get-GceImage -Project 'windows-cloud' -Family 'windows-2016'
+$config = New-GceInstanceConfig 'prodscgce2' `
+    -MachineType 'n1-standard-1' `
+    -BootDiskImage $disk `
+    -Metadata @{ "windows-startup-script-url" = "https://gist.githubusercontent.com/rchaganti/feaf23ade96269925c6ddf97ee757f28/raw/5599e91f15cf76d9c1bb6ad3aaa036fe67f89928/startupConfig.ps1" } `
+    -Tag $winrmhttpsTag
+        
+$gceInstance = $config | Add-GceInstance -Project $projectID

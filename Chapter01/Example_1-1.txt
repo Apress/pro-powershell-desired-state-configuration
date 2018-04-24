@@ -1,0 +1,2 @@
+Set-Service -Name wuauserv -StartupType Automatic
+Start-Service -Name wuauserv

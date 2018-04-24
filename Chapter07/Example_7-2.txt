@@ -1,0 +1,1 @@
+Test-xDscResource -Name HostsFile

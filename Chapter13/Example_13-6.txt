@@ -1,0 +1,1 @@
+.\getCimClassProperty.ps1 -ClassName MSFT_SignatureValidation -Namespace root/Microsoft/Windows/DesiredStateConfiguration | ft

@@ -1,0 +1,58 @@
+#---------------------------------#
+#      environment configuration  #
+#---------------------------------#
+version: 1.0.{build}.0
+
+environment:
+    auth_token:
+    secure: 3lekYfC1aw4vvKr9EZ+0WrCdWrN/00te/NtKC3FUNDQeH8gjWT/i4B1FBxltbhC4
+
+skip_commits:
+    files:
+    - README.md
+    message: /updated readme.*|update readme.*s|update docs.*|update version.*|update appveyor.*/
+
+install:
+    - git clone https://github.com/PowerShell/DscResource.Tests
+
+    - ps: |
+        Import-Module -Name "$env:APPVEYOR_BUILD_FOLDER\DscResource.Tests\AppVeyor.psm1"
+        Install-Module -Name posh-git -Force
+        Invoke-AppveyorInstallTask
+
+#---------------------------------#
+#      build configuration        #
+#---------------------------------#
+
+build: false
+
+#---------------------------------#
+#      test configuration         #
+#---------------------------------#
+
+test_script:
+    - ps: |
+        Invoke-AppveyorTestScriptTask -CodeCoverage -CodeCovIo -ExcludeTag @()
+
+#---------------------------------#
+#      deployment configuration   #
+#---------------------------------#
+
+# scripts to run before deployment
+deploy_script:
+    - ps: |      
+        Invoke-AppveyorAfterTestTask      
+
+deploy:
+    - git config --global credential.helper store
+    - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:GitHubKey):x-oauth-basic@github.com`n"
+    - git config --global user.email "Administrator@PSDSC.Lab"
+    - git config --global user.name "Administrator"
+    provider: GitHub
+    auth_token:
+    secure: 3lekYfC1aw4vvKr9EZ+0WrCdWrN/00te/NtKC3FUNDQeH8gjWT/i4B1FBxltbhC4
+    artifact: /.*\.zip/
+    draft: false
+    prerelease: false
+    on:
+    branch: master

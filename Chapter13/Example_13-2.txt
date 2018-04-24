@@ -1,0 +1,1 @@
+Get-Content -Path '\\S16-01\C$\Windows\System32\configuration\pending.mof'

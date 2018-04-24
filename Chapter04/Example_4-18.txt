@@ -1,0 +1,1 @@
+Get-DscResource -Name xHostsFile -Module xNetworking -Syntax

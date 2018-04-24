@@ -1,0 +1,4 @@
+@'
+    ProDsc/DscResource.Tests
+    ProDsc/DscResource.Tests/*
+'@ | Out-File -Path C:\Source\ProDsc\.gitignore -force

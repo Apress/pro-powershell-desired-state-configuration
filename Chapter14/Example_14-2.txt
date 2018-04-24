@@ -1,0 +1,27 @@
+[CmdletBinding()]
+param
+(
+    [Parameter()]    
+    [string[]]
+    $Task = 'default'
+)
+    
+$dependentModules = @('Pester','PSScriptAnalyzer','Psake','PSDeploy')
+
+try
+{
+    #Ensure all dependent modules are present
+    foreach ($module in $dependentModules)
+    {
+        if (!(Get-Module -Name $module -ListAvailable))
+        {
+            Install-Module -Name $module -Force
+        }
+    }
+    
+    Invoke-Psake -BuildFile "$PSScriptRoot\moduleBuild.ps1" -TaskList $Task -Verbose 
+}
+catch
+{
+    Write-Error $_
+}

@@ -1,0 +1,72 @@
+$confgData = @{
+    AllNodes = @(
+        @{
+            NodeName = 'localhost'
+            PSDscAllowDomainUser = $true
+            CertificateFile = 'C:\PublicKeys\sqldb.cer'
+            Thumbprint = '1DAEA5189FA2D927151C96C5F43F3DA13114573D'
+        }
+    )
+}
+
+configuration OSConfig
+{
+    param
+    (
+        [Parameter(Mandatory)]
+        [pscredential]
+        $Credential,
+
+        [Parameter(Mandatory)]
+        [string]
+        $OSImageDriveLetter
+    )
+    
+    Import-DscResource -ModuleName xComputerManagement -Name xComputer -ModuleVersion 3.1.0.0
+    Import-DscResource -ModuleName xNetworking -Name xIPAddress, xDefaultGatewayAddress, xDnsServerAddress -ModuleVerison 5.3.0.0
+
+    Import-DscResource –ModuleName 'PSDesiredStateConfiguration'
+
+    Node $AllNodes.NodeName
+    {
+        WindowsFeature 'NetFramework35'
+        {
+            Name   = 'NET-Framework-Core'
+            Source = "${OSImageDriveLetter}\Sources\Sxs"
+            Ensure = 'Present'
+        }
+
+        xIPAddress NodeIPAddress
+        {
+            InterfaceAlias = 'Ethernet'
+            IPAddress = '172.16.102.39/24'
+            AddressFamily = 'IPv4'
+        }
+
+        xDefaultGatewayAddress NodeDefaultGateway
+        {
+            Address        = '172.16.102.1'
+            InterfaceAlias = 'Ethernet'
+            AddressFamily  = 'IPv4'
+            DependsOn = '[xIPAddress]NodeIPAddress'
+        }
+
+        xDnsServerAddress NodeDnsServerAddress
+        {
+            Address        = '172.16.102.91'
+            InterfaceAlias = 'Ethernet'
+            AddressFamily  = 'IPv4'
+            DependsOn = '[xIPAddress]NodeIPAddress'
+        }
+
+        xComputer RenameAndDomainHJoin
+        {
+            Name = 'SQLDB'
+            DomainName = 'psdsc.lab'
+            Credential = $Credential
+            DependsOn = '[xDnsServerAddress]NodeDnsServerAddress'
+        }
+    }
+}
+
+OSConfig -configurationData $confgData -Credential (Get-Credential) -osImageDriveLetter 'D:'

@@ -1,0 +1,27 @@
+$containerID = (docker ps -aqf "name=winservercore")
+$container = (docker inspect $containerID) | ConvertFrom-Json
+$hostName = $container.Config.Hostname
+
+Configuration ContainerDemo
+{
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String]
+        $NodeName
+    )
+
+    Import-DscResource -ModuleName PSDesiredStateConfiguration -ModuleVersion 1.1
+
+    Node $NodeName
+    {
+        WindowsFeature NET-Framework-45-Core
+        {
+            Name = 'NET-Framework-45-Core'
+            Ensure = 'Present'
+        }
+    }
+}
+
+ContainerDemo -OutputPath C:\scripts\ContainerDemo -NodeName $hostName
+Start-DscConfiguration -Path C:\scripts\ContainerDemo -Wait -Verbose

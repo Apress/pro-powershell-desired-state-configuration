@@ -1,0 +1,51 @@
+[DscLocalConfigurationManager()]
+    Configuration LCMConfiguration
+    {
+        Settings
+        {
+            CertificateID = '1DAEA5189FA2D927151C96C5F43F3DA13114573D'
+            RebootNodeIfNeeded = $true
+            ActionAfterReboot = 'ContinueConfiguration'
+        }
+    
+        ConfigurationRepositoryWeb S16Pull01
+        {
+            ServerURL = 'http://S16-PULL-01:8080/PSDSCPullServer.svc'
+            RegistrationKey = '4867cdea-9dde-48a0-8416-2daa89471991'
+            AllowUnsecureConnection = $true
+            ConfigurationNames = @('OSConfig','SQLConfig','FirewallConfig')
+        }
+    
+        ResourceRepositoryWeb S16Pull01
+        {
+            ServerURL = 'http://S16-PULL-01:8080/PSDSCPullServer.svc'
+            RegistrationKey = '4867cdea-9dde-48a0-8416-2daa89471991'
+            AllowUnsecureConnection = $true
+        }
+    
+        PartialConfiguration OSConfig
+        {
+            RefreshMode = 'Pull'
+            Description = 'OS configuration fragment for Windows feature, host network, and domain join'
+            ExclusiveResources = 'WindowsFeature'
+            ConfigurationSource = '[ConfigurationRepositoryWeb]S16Pull01'
+        }
+    
+        PartialConfiguration SQLConfig
+        {
+            RefreshMode = 'Pull'
+            Description = 'SQL configuration fragment for SQL instance install and configuration.'
+            ConfigurationSource = '[ConfigurationRepositoryWeb]S16Pull01'
+            DependsOn = '[PartialConfiguration]OSConfig'
+        }
+    
+        PartialConfiguration FirewallConfig
+        {
+            RefreshMode = 'Pull'
+            Description = 'Firewall configuration fragment for OS and SQL instance hardnening.'
+            ConfigurationSource = '[ConfigurationRepositoryWeb]S16Pull01'
+            DependsOn = '[PartialConfiguration]OSConfig'
+        }
+    }
+    
+    LCMConfiguration

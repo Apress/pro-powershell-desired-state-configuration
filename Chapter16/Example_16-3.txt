@@ -1,0 +1,6 @@
+$configurationData = Get-ByteArry $mof.FullName
+$result = Invoke-CimMethod -ComputerName S16-Pull-01 `
+                            –Namespace root/Microsoft/Windows/DesiredStateConfiguration `
+                            -ClassName MSFT_DSCLocalConfigurationManager `
+                            -MethodName GetConfiguration `
+                            -Arguments @{ConfigurationData = $configurationData}

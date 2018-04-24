@@ -1,0 +1,11 @@
+#User or group for which the JEA endpoint is being created
+$principal = 'psdsc\ravi'
+
+$sessionSplat = @{
+    RunAsVirtualAccount = $true
+    RoleDefinitions     = @{$principal = @{RoleCapabilities = 'ProDscGet'}}
+    SessionType         = 'RestrictedRemoteServer'
+    Path                = 'C:\scripts\ProDscJEA.pssc'
+}
+
+New-PSSessionConfigurationFile @sessionSplat

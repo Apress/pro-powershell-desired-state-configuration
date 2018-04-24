@@ -1,0 +1,13 @@
+Configuration DebugDemo
+{
+    Import-DscResource -ModuleName BuggyResource -Name BuggyHostsFile
+
+    BuggyHostsFile BugDebug
+    {
+        HostName = 'TestServer11'
+        IPAddress = '10.10.10.11'
+        Ensure = 'Present'
+    }
+}
+
+DebugDemo

@@ -1,0 +1,6 @@
+ProDscModuleDeployment:
+    Source:
+    - '.\'
+    Destination:
+    - 'ProDscRepo'
+    DeploymentType: PSGalleryModule

@@ -1,0 +1,5 @@
+$testParameters = @{
+    HostName  = 'TestServer102'
+    IPAddress = '172.16.102.102'
+    Verbose   = $true
+}

@@ -1,0 +1,1 @@
+Enable-DscDebug -BreakAll -Verbose

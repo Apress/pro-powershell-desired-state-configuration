@@ -1,0 +1,2 @@
+$containerID = (docker ps -aqf "name=winservercore")
+$container = (docker inspect $containerID) | ConvertFrom-Json

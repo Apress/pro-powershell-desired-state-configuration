@@ -1,0 +1,10 @@
+$env:PSModulePath (folder)
+    |- ResourceModuleName (folder)
+        |- DSCClassResources
+            |- Resource1Name
+                |- Resource1Name.psm1 (file, required)
+                |- Resource1Name.psd1 (file, required)
+            |- Resource2Name
+                |- Resource2Name.psm1 (file, required)
+                |- Resource2Name.psd1 (file, required)
+    |- ResourceModuleName.psd1 (file, required)

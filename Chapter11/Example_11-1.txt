@@ -1,0 +1,89 @@
+$certFile = 'C:\PublicKeys\AD.cer'
+$thumbprint = $(
+    $cert = [System.Security.Cryptography.X509Certificates.X509Certificate2]::new()
+    $cert.Import($certFile)
+    $cert.Thumbprint
+)
+
+$configData = @{
+    AllNodes = @(
+        @{
+            NodeName = 'localhost'
+            CertificateFile = $certFile
+            Thumbprint = $thumbprint
+            PSDscAllowDomainUser = $true
+        }
+    )
+}
+
+Configuration CreateADDomain
+{
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String]
+        $DomainName,
+        
+        [Parameter(Mandatory = $true)]
+        [pscredential]
+        $DomainCredential,
+
+        [Parameter(Mandatory = $true)]
+        [pscredential]
+        $SafemodeAdministratorCredential,
+        
+        [Parameter(Mandatory = $true)]
+        [pscredential]
+        $FirstUserCredential
+    )
+    
+    Import-DscResource -ModuleName xActiveDirectory -ModuleVersion 2.16.0.0
+    Import-DscResource –ModuleName PSDesiredStateConfiguration -ModuleVersion 1.1
+
+    Node $AllNodes.NodeName
+    {
+        WindowsFeature ADDS             
+        {             
+            Ensure = 'Present'             
+            Name = 'AD-Domain-Services'             
+        }            
+        
+        WindowsFeature ADDSMgmt         
+        {             
+            Ensure = 'Present'    
+            Name = 'RSAT-ADDS'  
+            DependsOn = '[WindowsFeature]ADDS'
+        }            
+                        
+        xADDomain FirstDS             
+        {             
+            DomainName = $DomainName            
+            DomainAdministratorCredential = $DomainCredential             
+            SafemodeAdministratorPassword = $SafemodeAdministratorCredential
+            DependsOn = '[WindowsFeature]ADDSMgmt'          
+        }
+        
+        xWaitForADDomain FirstDSWait
+        {
+            DomainName = $DomainName
+            DomainUserCredential = $DomainCredential
+            DependsOn = '[xADDomain]FirstDS'
+        } 
+
+        xADUser FirstUser 
+        { 
+            DomainName = $DomainName 
+            DomainAdministratorCredential = $DomainCredential 
+            UserName = $FirstUserCredential.Username 
+            Password = $FirstUserCredential
+            Ensure = 'Present' 
+            DependsOn = '[xWaitForADDomain]FirstDSWait' 
+        }                
+    }
+}
+
+CreateADDomain -configurationData $confgData `
+                -DomainCredential (Get-Credential -Message 'Enter new domain administrator credentials ...') `
+                -SafemodeAdministratorCredential (Get-Credential -Message 'Enter safe mode administrator credentials ...') `
+                -FirstUserCredential (Get-Credential -Message 'Enter first user credentials ...')
+                

@@ -1,0 +1,73 @@
+$location = 'eastus2'
+$resourceGroupName = 'ProDscAzure'
+$vmName = 'avm-s16-03'
+$storageAccountName = 'prodscstore'
+$cred = Get-Credential
+
+# Create a resource group
+$null = New-AzureRmResourceGroup -Name $resourceGroupName -Location $location
+
+# Create Storage Account
+$null = New-AzureRmStorageAccount -ResourceGroupName $resourceGroupName `
+                                    -Name $storageAccountName -Type 'Standard_LRS' `
+                                    -Location $location
+
+# Create a subnet configuration
+$subnetConfig = New-AzureRmVirtualNetworkSubnetConfig -Name mySubnet `
+                                       -AddressPrefix 192.168.1.0/24
+
+# Create a virtual network
+$vnet = New-AzureRmVirtualNetwork -ResourceGroupName $resourceGroupName `
+                     -Location $location `
+                     -Name MYvNET `
+                     -AddressPrefix 192.168.0.0/16 `
+                     -Subnet $subnetConfig
+
+# Create a public IP address and specify a DNS name
+$pip = New-AzureRmPublicIpAddress -ResourceGroupName $resourceGroupName `
+                    -Location $location `
+                    -AllocationMethod Static `
+                    -IdleTimeoutInMinutes 4 `
+                    -Name "$vmName_pip" `
+                    -DomainNameLabel $vmName
+    
+# Create an inbound network security group rule for port 80
+$nsgRuleWeb = New-AzureRmNetworkSecurityRuleConfig -Name myNetworkSecurityGroupRuleWWW  
+                                                   -Protocol Tcp `
+                                                   -Direction Inbound `
+                                                   -Priority 1001 `
+                                                   -SourceAddressPrefix * `
+                                                   -SourcePortRange * `
+                                                   -DestinationAddressPrefix * `
+                                                -DestinationPortRange 80 -Access Allow
+
+# Create a network security group
+$nsg = New-AzureRmNetworkSecurityGroup -ResourceGroupName $resourceGroupName `
+                                       -Location $location `
+                                       -Name myNetworkSecurityGroup `
+                                       -SecurityRules $nsgRuleWeb
+
+# Create a virtual network card and associate with public IP address and NSG
+$nic = New-AzureRmNetworkInterface -Name myNic `
+                                   -ResourceGroupName $resourceGroupName `
+                                   -Location $location `
+                                   -SubnetId $vnet.Subnets[0].Id `
+                                   -PublicIpAddressId $pip.Id `
+                                   -NetworkSecurityGroupId $nsg.Id	
+
+# Create a virtual machine configuration
+$vmConfig = New-AzureRmVMConfig -VMName $vmName -VMSize Standard_A1 | 
+    Set-AzureRmVMOperatingSystem -Windows -ComputerName $vmName -Credential $cred | 
+    Set-AzureRmVMSourceImage -PublisherName MicrosoftWindowsServer -Offer WindowsServer 
+    -Skus 2016-Datacenter -Version latest | Add-AzureRmVMNetworkInterface -Id $nic.Id
+
+# Create the virtual machine
+New-AzureRmVM -ResourceGroupName $resourceGroupName -Location $location -VM $vmConfig
+
+# Set Azure DSC extension
+Publish-AzureRmVMDscConfiguration -ConfigurationPath .\webserver.ps1 -ResourceGroupName $resourceGroupName `
+                                    -StorageAccountName $storageAccountName -force
+
+Set-AzureRmVMDscExtension -ResourceGroupName $resourceGroupName -VMName $vmName `
+                            -ArchiveStorageAccountName $storageAccountName -ArchiveBlobName webserver.ps1.zip `
+                            -AutoUpdate -ConfigurationName 'WebServer' -Version 2.72

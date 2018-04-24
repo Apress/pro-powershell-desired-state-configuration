@@ -1,0 +1,29 @@
+$commandBlock = @'
+$scripts = 'https://github.com/rchaganti/cfnDSC/raw/master/WebServerDSCBootstrap.zip'
+
+if (-not (Test-Path -Path C:\Temp))
+{
+    $null = New-Item -Path C:\Temp -ItemType Directory -Force -Verbose
+}
+
+#Download the scripts archive
+$archivePath = 'C:\temp\WebServerDSCBootstrap.zip'
+Invoke-WebRequest -Uri $scripts -OutFile $archivePath -Verbose
+
+#Expand the achive
+Add-Type -assembly "system.io.compression.filesystem"
+[io.compression.zipfile]::ExtractToDirectory($archivePath, 'C:\Temp')
+
+Set-Location -Path C:\Temp
+.\ConfigureFirewall.ps1
+.\WebServerDSCBootstrap.ps1
+
+Start-DscConfiguration -Path C:\Temp\WebServerDemo -wait -Verbose
+'@
+
+$instanceID = 'i-0cd0a54070119de93'
+
+$configCommand = Send-SSMCommand -instanceId $instanceID `
+                                    -DocumentName AWS-RunPowerShellScript `
+                                    -Comment 'DSC configuration onboarding using SSM Command' `
+                                    -Parameter @{'commands'=@($commandBlock)} -Verbose

@@ -1,0 +1,15 @@
+configuration WebServerConfig
+{
+    Import-DscResource -ModuleName PSDesiredStateConfiguration -ModuleVersion 1.1
+
+    node OSConfig
+    {
+        WindowsFeature Web-Server
+        {
+            Name = 'Web-Server'
+            Ensure = 'Present'
+        }
+    }
+}
+
+WebServerConfig -OutputPath .\OSConfig -Verbose

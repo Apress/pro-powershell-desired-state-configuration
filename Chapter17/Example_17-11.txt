@@ -1,0 +1,91 @@
+# Update for your admin password
+$adminUserName = 'ravikanth'
+$adminPassword = Read-Host -AsSecureString
+
+$resourceGroupName = 'ProDscAzure'
+$vmName = 'avm-s16-05'
+
+$vNetName = 'prodscvnet'
+$vNetSubNet = 'prodscsubnet'
+
+#login to Azure
+az login
+
+# Create a resource group.
+az group create --name $resourceGroupName --location eastus2
+
+# Create a vNet and subnet
+az network vnet create `
+    --resource-group $resourceGroupName `
+    --name $vNetName `
+    --address-prefix 10.0.0.0/16 `
+    --subnet-name $vNetSubnet `
+    --subnet-prefix 10.0.1.0/24
+
+# Create NSG
+az network nsg create `
+    --resource-group $resourceGroupName `
+    --name prodscnsg
+
+# Create NSG rule to allow traffic on port 80.
+az network nsg rule create `
+    --resource-group $resourceGroupName `
+    --nsg-name prodscnsg `
+    --name http `
+    --access allow `
+    --protocol Tcp `
+    --direction Inbound `
+    --priority 100 `
+    --source-address-prefix "*" `
+    --source-port-range "*" `
+    --destination-address-prefix "*" `
+    --destination-port-range 80
+
+# Create NSG rule to allow traffic on port 3389.
+az network nsg rule create `
+    --resource-group $resourceGroupName `
+    --nsg-name prodscnsg `
+    --name rdp `
+    --access allow `
+    --protocol Tcp `
+    --direction Inbound `
+    --priority 101 `
+    --source-address-prefix "*" `
+    --source-port-range "*" `
+    --destination-address-prefix "*" `
+    --destination-port-range 3389
+
+# Create public IP
+az network public-ip create `
+    --resource-group $resourceGroupName `
+    --name prodscpip `
+    --dns-name $vmName `
+    --allocation-method Static
+
+# Create a NIC for the VM and attach the NSG and PIP
+az network nic create `
+    --resource-group $resourceGroupName `
+    --name nic1 `
+    --vnet-name $vNetName `
+    --subnet $vNetSubnet `
+    --network-security-group prodscnsg `
+    --public-ip-address prodscpip
+
+# Create a VM
+az vm create `
+    --resource-group $resourceGroupName `
+    --name $vmName `
+    --size Standard_A1 `
+    --image Win2016Datacenter `
+    --admin-username $adminUserName `
+    --admin-password $adminPassword `
+    --nics nic1
+
+# Start DSC extension handler to use a simple bash script to update, download scripts and install webserver
+az vm extension set `
+   --name DSC `
+   --publisher Microsoft.Powershell `
+   --version 2.72 `
+   --vm-name $vmName `
+   --resource-group $resourceGroupName `
+   --settings "{'ModulesURL':'https://raw.githubusercontent.com/rchaganti/ARMTemplates/master/webserver.zip', 'configurationFunction': 'webserver.ps1\\webserver'}"

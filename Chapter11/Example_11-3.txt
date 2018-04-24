@@ -1,0 +1,23 @@
+Configuration ClusterFeature
+{
+    param
+    (
+        [Parameter(Mandatory)]
+        [String[]]
+        $Nodes
+    )
+
+    Import-DscResource -Module PSDesiredStateConfiguration
+    
+    Node $Nodes
+    {
+        WindowsFeature FailoverCluster
+        {
+            Name = 'Failover-Clustering'
+            IncludeAllSubFeature = $true
+            Ensure = 'Present'
+        }
+    }
+}
+
+ClusterFeature -Node 'CNODE02','CNODE03','CNODE04'

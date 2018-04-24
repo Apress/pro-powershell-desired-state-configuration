@@ -1,0 +1,1 @@
+$registrationInfo = Get-AzureRmAutomationRegistrationInfo -ResourceGroupName $resourceGroupName -AutomationAccountName 'ProDSCAA'

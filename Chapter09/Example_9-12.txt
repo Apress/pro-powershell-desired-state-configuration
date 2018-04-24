@@ -1,0 +1,49 @@
+Configuration OSConfig
+{
+    Import-DscResource -ModuleName PSDesiredStateConfiguration
+    Node S16-01
+    {
+        File ScriptFlag
+        {
+            DestinationPath = 'C:\OSDeployment.tag'
+            Type = 'File'
+            Contents = ''
+            Ensure = 'Present'
+        }
+
+        File ScriptsFolder
+        {
+            DestinationPath = 'C:\Scripts'
+            Type = 'Directory'
+            Ensure = 'Present'
+        }
+
+        File Script
+        {
+            DestinationPath = 'C:\Scripts\DeployApp.ps1'
+            Type = 'File'
+            Contents = 'Start-AppDeploy -Name MyApp'
+            Ensure = 'Present'
+        }
+    }
+
+    Node S16-02
+    {
+        File AppFlag
+        {
+            DestinationPath = 'C:\AppDeploy.tag'
+            Type = 'File'
+            Contents = ''
+            Ensure = 'Present'
+        }
+
+        File AppFolder
+        {
+            DestinationPath = 'C:\MyApp'
+            Type = 'Directory'
+            Ensure = 'Present'
+        }
+    }
+}
+
+OSConfig

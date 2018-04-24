@@ -1,0 +1,10 @@
+$certPath = 'C:\Certificates\ProDscSignature.cer'
+
+if (-Not (Test-Path -Path (Split-Path -Path $certPath -Parent)))
+{
+	$null = New-Item -Path C:\Certificates -ItemType Directory -Force
+}
+
+$cert = New-SelfSignedCertificate -Subject 'ProDscSignature' -Type CodeSigning -CertStoreLocation Cert:\CurrentUser\My
+$cert | Export-Certificate -FilePath $certPath
+Import-Certificate -FilePath $certPath -CertStoreLocation Cert:\CurrentUser\Root\

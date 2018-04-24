@@ -1,0 +1,13 @@
+$MyData = 
+@{
+    AllNodes = 
+    @(
+        @{
+            NodeName = 'S16-01'
+        },
+        @{
+            NodeName = 'S16-02'
+        }
+    )
+    NonNodeData = '' 
+}

@@ -1,0 +1,13 @@
+#Module manifest
+$manifestGuid = (New-Guid).Guid
+
+$manifestSplat = @{
+    Guid = $manifestGuid
+    ModuleVersion = '1.0.0.0'
+    Author = 'DSCFan'
+    Company = 'The Awesome DSC Inc.'
+    Description = 'Pro DSC JEA endpoint'
+    Path = 'C:\Scripts\ProDscJEA\ProDscJEA.psd1'
+}
+
+New-ModuleManifest @manifestSplat

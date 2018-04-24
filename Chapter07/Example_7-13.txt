@@ -1,0 +1,85 @@
+#region HEADER
+
+# Unit Test Template Version: 1.2.0
+$script:moduleRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+if ( (-not (Test-Path -Path (Join-Path -Path $script:moduleRoot -ChildPath 'DSCResource.Tests'))) -or `
+        (-not (Test-Path -Path (Join-Path -Path $script:moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1'))) )
+{
+    & git @('clone','https://github.com/PowerShell/DscResource.Tests.git',(Join-Path -Path $script:moduleRoot -ChildPath '\DSCResource.Tests\'))
+}
+
+Import-Module -Name (Join-Path -Path $script:moduleRoot -ChildPath (Join-Path -Path 'DSCResource.Tests' -ChildPath 'TestHelper.psm1')) -Force
+
+$TestEnvironment = Initialize-TestEnvironment `
+    -DSCModuleName 'ProDsc' `
+    -DSCResourceName 'HostsFile' `
+    -TestType Unit
+
+#endregion HEADER
+
+function Invoke-TestSetup {
+    # TODO: Optional init code goes here...
+}
+
+function Invoke-TestCleanup {
+    Restore-TestEnvironment -TestEnvironment $TestEnvironment
+
+    # TODO: Other Optional Cleanup Code Goes Here...
+}
+
+# Begin Testing
+try
+{
+    Invoke-TestSetup
+    
+    InModuleScope 'HostsFile' {
+
+        Describe '<Test-name>' {
+            BeforeEach {
+                # per-test-initialization
+            }
+
+            AfterEach {
+                # per-test-cleanup
+            }
+
+            Context 'Context-description' {
+                BeforeEach {
+                    # per-test-initialization
+                }
+
+                AfterEach {
+                    # per-test-cleanup
+                }
+
+                It 'Should...test-description' {
+                    # test-code
+                }
+
+                It 'Should...test-description' {
+                    # test-code
+                }
+            }
+
+            Context 'Context-description' {
+                It 'Should ....test-description' {
+                    # test-code
+                }
+            }
+        }
+
+        Describe '<Test-name>' {
+            Context '<Context-description>' {
+                It 'Should ...test-description' {
+                    # test-code
+                }
+            }
+        }
+
+        # TODO: add more Describe blocks as needed
+    }
+}
+finally
+{
+    Invoke-TestCleanup
+}

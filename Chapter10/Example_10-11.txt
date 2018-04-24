@@ -1,0 +1,71 @@
+$confgData = @{
+    AllNodes = @(
+        @{
+            NodeName = 'localhost'
+            PSDscAllowDomainUser = $true
+            CertificateFile = 'C:\PublicKeys\sqldb.cer'
+            Thumbprint = '1DAEA5189FA2D927151C96C5F43F3DA13114573D'
+        }
+    )
+}
+
+Configuration SQLConfig
+{
+    [CmdletBinding()]
+    param
+    (
+        [Parameter(Mandatory)]
+        [psCredential]
+        $SqlInstallCredential,
+
+        [Parameter()]
+        [psCredential]
+        $SqlAdministratorCredential = $SqlInstallCredential,
+
+        [Parameter(Mandatory)]
+        [psCredential]
+        $SqlServiceCredential,
+
+        [Parameter()]
+        [psCredential]
+        $SqlAgentServiceCredential = $SqlServiceCredential,
+
+        [Parameter(Mandatory)]
+        [ValidateNotNullorEmpty()]
+        [String]
+        $SqlInstallerDriverLetter
+    )
+
+    Import-DscResource -ModuleName xSQLServer
+
+    Node $AllNodes.NodeName
+    {
+        WindowsFeature WebServer
+        {
+            Name   = 'Web-Server'
+            Ensure = 'Present'
+        }
+                
+        xSQLServerSetup 'InstallDefaultInstance'
+        {
+            InstanceName         = 'MSSQLSERVER'
+            Features             = 'SQLENGINE'
+            SQLCollation         = 'SQL_Latin1_General_CP1_CI_AS'
+            SQLSvcAccount        = $SqlServiceCredential
+            AgtSvcAccount        = $SqlAgentServiceCredential
+            SQLSysAdminAccounts  = $SqlAdministratorCredential.UserName
+            InstallSharedDir     = 'C:\Program Files\Microsoft SQL Server'
+            InstallSharedWOWDir  = 'C:\Program Files (x86)\Microsoft SQL Server'
+            InstanceDir          = 'C:\Program Files\Microsoft SQL Server'
+            SourcePath           = $SqlInstallerDriverLetter
+            UpdateEnabled        = 'False'
+            ForceReboot          = $false
+            PsDscRunAsCredential = $SqlInstallCredential
+        }
+    }
+}
+
+$SqlInstallCredential = Get-Credential -Message 'Enter SQL Install account credentials ...'
+$SqlServiceCredential = Get-Credential -Message 'Enter SQL service account credentials ...'
+
+SQLConfig -SqlInstallCredential $SqlInstallCredential -SqlServiceCredential $SqlServiceCredential -SqlInstallerDriverLetter 'E:' -ConfigurationData $confgData -Verbose

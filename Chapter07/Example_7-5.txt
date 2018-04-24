@@ -1,0 +1,11 @@
+$properties = @{
+    HostName  = 'TestServer101'
+    IPAddress = '172.16.101.101'
+    Ensure = 'Present' 
+}
+
+Invoke-DscResource -Name HostsFile `
+                    -Method Test `
+                    -ModuleName ProDsc `
+                    -Property $properties `
+                    -Verbose

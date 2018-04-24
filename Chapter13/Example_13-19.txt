@@ -1,0 +1,39 @@
+Configuration DSCNonAdminOperation
+{
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String]
+        $Principal,
+
+        [Parameter(Mandatory = $true)]
+        [String]
+        $JEAModuleShare
+    )
+    
+    Import-DSCResource -ModuleName PSDesiredStateConfiguration -ModuleVersion 1.1
+    Import-DscResource -ModuleName JustEnoughAdministration -ModuleVersion 1.0
+    
+    Node @('S16-01','S16-02')
+    {
+        File RoleCapability
+        {
+            SourcePath = $JEAModuleShare
+            DestinationPath = 'C:\Program Files\WindowsPowerShell\Modules\ProDSCJEA'
+            Checksum = 'SHA-256'
+            Ensure = 'Present'
+            Type = 'Directory'
+            Recurse = $true
+        }
+
+        JeaEndpoint ProDSCJEAEndpoint
+        {
+            EndpointName = 'ProDscJEA'
+            RoleDefinitions = "@{ `'$Principal`' = @{ RoleCapabilities = 'ProDscGet' } }"
+            TranscriptDirectory = 'C:\ProgramData\JEAConfiguration\Transcripts'
+            DependsOn = '[File]RoleCapability'
+        }
+    }
+}
+
+DSCNonAdminOperation -Principal 'psdsc\ravi' -JEAModuleShare '\\S16-JB\ProDSCJEA'

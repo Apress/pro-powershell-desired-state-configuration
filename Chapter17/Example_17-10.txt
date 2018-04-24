@@ -1,0 +1,1 @@
+New-AzureRmResourceGroupDeployment -Name ProDSCAzureVM @parameters -Verbose

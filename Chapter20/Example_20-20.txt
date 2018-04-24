@@ -1,0 +1,18 @@
+docker container run -it 58a66aa850d5 powershell -command {start-sleep 60; Get-dscConfiguration}
+
+ConfigurationName    : ContainerCopyDemo
+DependsOn            :
+ModuleName           : PSDesiredStateConfiguration
+ModuleVersion        : 1.1
+PsDscRunAsCredential :
+ResourceId           : [WindowsFeature]NET-Framework-45-Core
+SourceInfo           :
+Credential           :
+DisplayName          : .NET Framework 4.6
+Ensure               : Present
+IncludeAllSubFeature : False
+LogPath              :
+Name                 : NET-Framework-45-Core
+Source               :
+PSComputerName       :
+CimClassName         : MSFT_RoleResource

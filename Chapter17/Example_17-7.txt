@@ -1,0 +1,204 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "assetLocation": {
+            "type": "string",
+            "defaultValue": "https://raw.githubusercontent.com/rchaganti/ARMTemplates/master/",
+            "metadata": {
+                "description": "The location of resources such as templates and DSC modules that the script is dependent on."
+            }
+        },
+        "vmName": {
+            "type": "string",
+            "defaultValue": "avm-s16-04",
+            "metadata": {
+                "description": "Name of the virtual machine."
+            }
+        },
+        "adminUserName": {
+            "type": "string",
+            "defaultValue": "admin",
+            "metadata": {
+                "description": "administrator user name for the VMs."
+            }
+        },
+        "adminPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "administrator user password for the VMs."
+            }
+        }
+    },
+    "variables": {
+        "vNetPrefix": "172.22.176.0/20",
+        "vNetName": "prodscnet",
+        "vNetSubnetName": "prodscsubnet",
+        "vnetSubnetPrefix": "172.22.176.",
+        "vNetSubnetCIDR": "172.22.176.0/20",
+        "vNetSubnetID": "[concat(resourceId('Microsoft.Network/virtualNetworks',variables('vNetName')),'/subnets/',variables('vNetSubnetName'))]"
+    },
+    "resources": [
+        {
+            "name": "prodscnsg",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2016-09-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "allow-http-80",
+                        "properties": {
+                            "priority": 1001,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "Tcp",
+                            "destinationPortRange": "80",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    }                    
+                ]
+            }
+        },
+        {
+            "name": "[variables('vNetName')]",
+            "type": "Microsoft.Network/virtualNetworks",
+            "location": "[ResourceGroup().Location]",
+            "apiVersion": "2015-05-01-preview",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkSecurityGroups/', 'prodscnsg')]"
+            ],
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[variables('vNetPrefix')]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[variables('vNetSubnetName')]",
+                        "properties": {
+                            "addressPrefix": "[variables('vNetSubnetCIDR')]",
+                            "networkSecurityGroup": {
+                                "id": "[resourceId(resourceGroup().name, 'Microsoft.Network/networkSecurityGroups', 'prodscnsg')]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "[concat(parameters('vmName'),'-pip')]",
+            "type": "Microsoft.Network/publicIpAddresses",
+            "apiVersion": "2016-09-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "publicIpAllocationMethod": "Dynamic",
+                "dnsSettings": {
+                    "domainNameLabel": "[parameters('vmName')]"
+                }                
+            }
+        },
+        {
+            "apiVersion": "2015-05-01-preview",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[concat(parameters('vmName'), '-nif')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/', variables('vNetName'))]",
+                "[concat('Microsoft.Network/publicIpAddresses/', concat(parameters('vmName'),'-pip'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "[concat(parameters('vmName'),'-ipconfig')]",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('vNetSubnetID')]"
+                            },
+                            "publicIpAddress": {
+                                "id": "[resourceId(resourceGroup().name ,'Microsoft.Network/publicIpAddresses', concat(parameters('vmName'),'-pip'))]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "[parameters('vmName')]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2016-04-30-preview",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', concat(parameters('vmName'), '-nif'))]"
+            ],
+            "properties": {
+                "osProfile": {
+                    "computerName": "[parameters('vmName')]",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]",
+                    "windowsConfiguration": {
+                        "provisionVmAgent": "true"
+                    }
+                },
+                "hardwareProfile": {
+                    "vmSize": "Standard_A1"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2016-Datacenter",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "name": "[parameters('vmName')]",
+                        "createOption": "FromImage",
+                        "managedDisk": {
+                            "storageAccountType": "Standard_LRS"
+                        },
+                        "caching": "ReadWrite"
+                    },
+                    "dataDisks": []
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('vmName'),'-nif'))]"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('vmName'),'/webserver')]",
+            "apiVersion": "2015-05-01-preview",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('vmName'))]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.Powershell",
+                "type": "DSC",
+                "typeHandlerVersion": "2.72",
+                "settings": {
+                    "ModulesUrl": "[concat(parameters('assetLocation'),'/webserver.zip')]",
+                    "ConfigurationFunction": "webserver.ps1\\webserver"
+                }
+            }
+        }
+    ],
+    "outputs": {
+        "PublicIP":{
+            "type": "string",
+            "value": "[reference([concat('Microsoft.Network/publicIpAddresses/',parameters('vmName'),'-pip')]).properties.ipAddress]"
+        },
+		"PublicDNSFQDN": {
+			"type": "string",
+			"value": "[reference([concat('Microsoft.Network/publicIpAddresses/',parameters('vmName'),'-pip')]).properties.dnsSettings.fqdn]"
+		}
+	}
+}

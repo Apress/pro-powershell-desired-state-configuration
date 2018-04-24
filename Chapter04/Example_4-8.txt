@@ -1,0 +1,1 @@
+Save-Module -Name PSDscResources -Path C:\Modules -Force

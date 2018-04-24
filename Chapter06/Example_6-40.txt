@@ -1,0 +1,2 @@
+Install-Module -Name ProDSC -Repository ProDSCRepo -Force
+Save-Module -Name ProDSC -Repository ProDscRepo -Path C:\scripts\DSCModules

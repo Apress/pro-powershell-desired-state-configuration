@@ -1,0 +1,8 @@
+ProDscModuleDeploymentToGallery:
+    Source:
+    - '.\ProDsc'
+    Destination:
+    - 'PSGallery'
+    DeploymentType: PSGalleryModule
+    Options:
+    ApiKey = 'your-Api_key'

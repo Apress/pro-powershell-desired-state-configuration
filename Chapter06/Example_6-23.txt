@@ -1,0 +1,12 @@
+$manifestParams = @{
+    Path = 'C:\Scripts\ProDSC\ProDSC.psd1'
+    RootModule = 'ProDsc.psm1'
+    Guid = (New-Guid).Guid
+    Author = 'DSCFan'
+    Company = 'The Awesome DSC Inc.'
+    ModuleVersion = "1.0.0.0"
+    Description = 'DSC resources from the ProDSC resource module.'
+    DscResourcesToExport = @('HostsFile')
+}
+
+New-ModuleManifest @manifestParams -Verbose

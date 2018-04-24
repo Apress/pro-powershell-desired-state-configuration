@@ -1,0 +1,12 @@
+[DscLocalConfigurationManager()]
+Configuration metaConfiguration
+{
+    Node S16-01
+    {
+        Settings
+        {
+            ConfigurationModeFrequencyMins = 30
+            ConfigurationMode = 'ApplyAndAutoCorrect'
+        }
+    }
+}

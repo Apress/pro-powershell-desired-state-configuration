@@ -1,0 +1,21 @@
+Configuration OSConfig
+{
+    Import-DscResource -ModuleName PSDesiredStateConfiguration -ModuleVersion 1.1
+
+    File ScriptFlag
+    {
+        DestinationPath = 'C:\OSDeployment.tag'
+        Type = 'File'
+        Contents = ''
+        Ensure = 'Present'
+    }
+
+    File ScriptsFolder
+    {
+        DestinationPath = 'C:\Scripts'
+        Type = 'Directory'
+        Ensure = 'Present'
+    }
+}
+
+OSConfig

@@ -1,0 +1,9 @@
+Mock -CommandName Get-Content -MockWith {
+    return @(
+        '# An example of a host file',
+        '',
+        '172.16.102.1       Router',
+        '127.0.0.1  localhost',
+        ''
+    )
+}

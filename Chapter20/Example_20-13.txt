@@ -1,0 +1,1 @@
+docker container exec winservercore powershell -command { Strat-DscConfiguration -Path C:\Windows\Temp -Wait -Verbose }

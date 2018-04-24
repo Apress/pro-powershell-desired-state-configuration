@@ -1,0 +1,93 @@
+$certFile = 'C:\PublicKeys\CNODE01.cer'
+$thumbprint = $(
+    $cert = [System.Security.Cryptography.X509Certificates.X509Certificate2]::new()
+    $cert.Import($certFile)
+    $cert.Thumbprint
+)
+
+$configData = @{
+    AllNodes = @(
+        @{
+            NodeName = 'CNODE01'
+            CertificateFile = $certFile
+            Thumbprint = $thumbprint
+            PSDscAllowDomainUser = $true
+        }
+    )
+}
+
+Configuration CreateCluster
+{
+    param
+    (
+        [Parameter(Mandatory)]
+        [pscredential]
+        $Credential,
+
+        [Parameter(Mandatory)]
+        [String]
+        $ClusterName,
+
+        [Parameter(Mandatory)]
+        [String]
+        $ClusterIPAddress,
+
+        [Parameter(Mandatory)]
+        [String[]]
+        $ClusterNodes
+
+    )
+
+    Import-DscResource -ModuleName FailoverClusterDsc -Name FailoverCluster, FailoverClusterNode, FailoverClusterResourceParameter
+    Import-DscResource -ModuleName PSDesiredStateConfiguration
+
+    Node $AllNodes.NodeName
+    {
+        WindowsFeature FailoverCluster
+        {
+            Name = 'Failover-Clustering'
+            IncludeAllSubFeature = $true
+            Ensure = 'Present'
+        }
+        
+        WindowsFeature FailoverClusterMgmt
+        {
+            Name = 'RSAT-Clustering'
+            IncludeAllSubFeature = $true
+            Ensure = 'Present'
+            DependsOn = '[WindowsFeature]FailoverCluster'
+        }
+
+        WaitForAll FCFeature
+        {
+            NodeName = $ClusterNodes
+            ResourceName = '[WindowsFeature]FailoverCluster'
+            RetryIntervalSec = 30
+            RetryCount = 10
+        }
+
+        FailoverCluster CreateCluster
+        {
+            ClusterName = $ClusterName
+            StaticAddress = $ClusterIPAddress
+            NoStorage = $true
+            Ensure = 'Present'
+            PsDscRunAsCredential = $Credential
+            DependsOn = '[WaitForAll]FCFeature'
+        }
+
+        foreach ($clusterNode in $clusterNodes)
+        {
+            FailoverClusterNode $clusterNode
+            {
+                NodeName = $clusterNode
+                ClusterName = 'S2D4NCluster'
+                PsDscRunAsCredential = $Credential
+                Ensure = 'Present'
+                DependsOn = '[FailoverCluster]CreateCluster'
+            }
+        }
+    }
+}
+
+CreateCluster -Credential (Get-Credential) -ConfigurationData $configData -ClusterName 'S2D4NCluster' -ClusterIPAddress '172.16.102.45' -ClusterNodes 'CNODE02','CNODE03','CNODE04'

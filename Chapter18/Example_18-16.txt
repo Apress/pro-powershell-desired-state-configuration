@@ -1,0 +1,1 @@
+Start-AzureRmAutomationDscCompilationJob -ConfigurationName 'webserver' -ResourceGroupName $resourceGroupName -AutomationAccountName 'ProDscAA'

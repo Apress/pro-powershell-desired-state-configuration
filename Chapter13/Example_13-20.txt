@@ -1,0 +1,5 @@
+$nodes = 'S16-01', 'S16-02'
+$cred = Get-Credential 'psdsc\ravi'
+$config = 'ProDscJEA'
+$result = Invoke-Command -ComputerName $nodes -ScriptBlock { Get-DscLocalConfigurationManager} -ConfigurationName $config -Credential $cred
+$result | Select-Object RefreshMode, ConfigurationMode, PSComputerName

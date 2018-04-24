@@ -1,0 +1,8 @@
+$disk = Get-GceImage -Project 'windows-cloud' -Family 'windows-2016'
+$config = New-GceInstanceConfig 'prodscgce1' `
+    -MachineType 'n1-standard-1' `
+    -BootDiskImage $disk `
+    -Metadata @{ "windows-startup-script-url" = "https://gist.githubusercontent.com/rchaganti/e635e5f90847780763fd61b6f6198863/raw/983e42f7205efb309969b6f759515decd7b8e147/firewallconfig.ps1" } `
+    -Tag $winrmhttpTag, $winrmhttpsTag
+    
+$gceInstance = $config | Add-GceInstance -Project $projectID

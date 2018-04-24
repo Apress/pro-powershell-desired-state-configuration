@@ -1,0 +1,39 @@
+[DSCLocalConfigurationManager()]
+configuration oDataHTTPSPullClient
+{
+    param
+    (
+        [Parameter()]
+        [String]
+        $NodeName = 'localhost',
+
+        [Parameter(Mandatory = $true)]
+        [String]
+        $ConfigurationID,
+
+        [Parameter(Mandatory = $true)]
+        [String]
+        $PullSvcEndpoint
+    )
+
+    Node $NodeName
+    {
+        Settings
+        {
+            RefreshMode     = 'Pull'
+            ConfigurationID = $ConfigurationID
+        }
+
+        ConfigurationRepositoryWeb HTTPSPullSvc
+        {
+            ServerURL          = $PullSvcEndpoint
+        }
+
+        ResourceRepositoryWeb HTTPSPullSvc
+        {
+            ServerURL          = $PullSvcEndpoint
+        }
+    }
+}
+
+oDataHTTPSPullClient -ConfigurationID 'af7250ef-83fb-4cfd-b09b-0f43fe012a50' -PullSvcEndpoint 'https://s16-pull-01.psdsc.lab:8080/PSDSCPullServer.svc'

@@ -1,0 +1,22 @@
+$ec2Name = 'ec2-18-218-88-255.us-east-2.compute.amazonaws.com'
+
+Configuration WebServer
+{
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String]
+        $NodeName
+    )
+    
+    Node $NodeName
+    {
+        WindowsFeature WebServer
+        {
+            Name = 'Web-Server'
+            Ensure = 'Present'
+        }
+    }
+}
+
+WebServer -NodeName $ec2Name

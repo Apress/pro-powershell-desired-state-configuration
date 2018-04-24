@@ -1,0 +1,26 @@
+Configuration ArchiveUnpack
+{
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String]
+        $Source,
+
+        [Parameter(Mandatory = $true)]
+        [String]
+        $Destination,
+
+        [Parameter()]
+        [Boolean]
+        $Force = $false
+    )
+
+    Import-DscResource –ModuleName 'PSDesiredStateConfiguration'
+
+    Archive Unpack
+    {
+        Path = $Source
+        Destination = $Destination
+        Force = $Force
+    }
+}

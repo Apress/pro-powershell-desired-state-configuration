@@ -1,0 +1,1 @@
+Enable-DscDebug -CimSession S16-01, S16-02 -BreakAll -Verbose

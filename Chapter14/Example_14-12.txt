@@ -1,0 +1,15 @@
+[CmdletBinding()]
+param
+(
+    [Parameter()]
+    [String]
+    $CommitMessage
+)
+
+$buildScriptPath = Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent
+$buildScript = "$buildScriptPath\build.ps1"
+
+if ($CommitMessage -and (-not ($CommitMessage -like "*Skip CI*")))
+{
+    . $buildScript    
+}

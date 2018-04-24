@@ -1,0 +1,25 @@
+Configuration FileCopyConfiguration
+{
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [pscredential]
+        $Credential
+    )
+
+    Import-DscResource -ModuleName PSDesiredStateConfiguration
+
+    Node S16-01
+    {
+        File FileCopyDemo
+        {
+            SourcePath = '\\S16-JB\Share\Unattend.xml'
+            DestinationPath = 'C:\Scripts\Unattend.xml'
+            Type = 'File'
+            Credential = $Credential
+            Force = $true
+        }
+    }
+}
+
+FileCopyConfiguration -Credential (Get-Credential)

@@ -1,0 +1,1 @@
+Get-AzureRmAutomationDscNode -ResourceGroupName $resourceGroupName -AutomationAccountName 'ProDSCAA' | Select-Object Name, NodeConfigurationName, Status

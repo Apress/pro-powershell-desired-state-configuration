@@ -1,0 +1,7 @@
+$resourceGroupName = 'ProDscAzure'
+$location = 'East US 2'
+
+$null = Add-AzureRmAccount
+$null = New-AzureRmResourceGroup -Name $resourceGroupName -Location $location
+
+$null = New-AzureRmAutomationAccount -Name 'ProDscAA' -Location "East US 2" -ResourceGroupName 'ProDscAzure'

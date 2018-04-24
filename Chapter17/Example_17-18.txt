@@ -1,0 +1,2 @@
+$cimSession = New-CimSession -ComputerName 'avm-s16-05.eastus2.cloudapp.azure.com' -Credential (Get-Credential)
+Get-DscLocalConfigurationManager -CimSession $cimSession

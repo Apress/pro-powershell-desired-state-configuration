@@ -1,0 +1,1 @@
+New-AzureRmAutomationModule -ContentLinkUri 'https://raw.githubusercontent.com/rchaganti/ARMTemplates/master/NetworkingDsc.zip' -Name NetworkingDsc -ResourceGroupName $resourceGroupName -AutomationAccountName 'ProDscAA' -Verbose

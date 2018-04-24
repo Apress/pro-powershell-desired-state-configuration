@@ -1,0 +1,23 @@
+Configuration ContainerCopyDemo
+{
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String]
+        $NodeName
+    )
+
+    Import-DscResource -ModuleName PSDesiredStateConfiguration -ModuleVersion 1.1
+
+    Node $NodeName
+    {
+        WindowsFeature NET-Framework-45-Core
+        {
+            Name = 'NET-Framework-45-Core'
+            Ensure = 'Present'
+        }
+    }
+}
+
+ContainerCopyDemo -NodeName 'localhost' -outputPath C:\Windows\Temp
+Start-DscConfiguration -Path C:\Windows\Temp -Wait -Verbose -Force

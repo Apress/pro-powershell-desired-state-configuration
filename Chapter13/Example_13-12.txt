@@ -1,0 +1,2 @@
+$certificate = Get-ChildItem Cert:\CurrentUser\My -CodeSigningCert
+Set-AuthenticodeSignature -Certificate $certificate -IncludeChain all -FilePath "$moduleFolder\$moduleName.cat"

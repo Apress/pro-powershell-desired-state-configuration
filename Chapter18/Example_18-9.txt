@@ -1,0 +1,25 @@
+Configuration GCEDemo
+{
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String]
+        $NodeName
+
+    )
+    
+    Import-DscResource -ModuleName PSDesiredStateConfiguration -ModuleVersion 1.1
+
+    Node $NodeName
+    {
+        WindowsFeature WebServer
+        {
+            Name = 'Web-Server'
+            Ensure = 'Absent'
+        }
+    }
+}
+
+GCEDemo -NodeName '35.229.193.26' -OutputPath C:\Scripts\GCE\GCEDemo
+
+Start-DscConfiguration -Wait -Verbose -Path .\GCEDemo -Credential (Get-Credential)

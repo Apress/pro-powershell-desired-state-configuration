@@ -1,0 +1,7 @@
+[ClassVersion("1.0.0.0"), FriendlyName("FailoverClusterQuorum")]
+class FailoverClusterQuorum : OMI_BaseResource
+{
+    [Key, ValueMap{"Yes"}, Values{"Yes"}] String IsSingleInstance;
+    [Required, ValueMap{"NodeMajority", "NodeAndDiskMajority", "NodeAndFileShareMajority", "DiskOnly"}, Values{"NodeMajority", "NodeAndDiskMajority", "NodeAndFileShareMajority", "DiskOnly"}] String QuorumType;
+    [Write] String Resource;
+};

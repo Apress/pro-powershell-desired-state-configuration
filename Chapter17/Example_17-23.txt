@@ -1,0 +1,36 @@
+[DscLocalConfigurationManager()]
+Configuration AADscMetaConfiguration
+{
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String]
+        $RegistrationKey,
+
+        [Parameter(Mandatory = $true)]
+        [String]
+        $EndPointURL,
+
+        [Parameter()]
+        [String]
+        $NodeName
+    )
+
+    Node $NodeName
+    {
+        Settings
+        {
+            ConfigurationMode = 'ApplyAndMonitor'
+            ActionAfterReboot = 'ContinueConfiguration'
+        }
+
+        ReportServerWeb AADSCReport
+        {
+            ServerURL = $EndPointURL
+            RegistrationKey = $RegistrationKey
+        }
+    }
+}
+
+$registrationInfo = Get-AzureRmAutomationRegistrationInfo -ResourceGroupName $resourceGroupName -AutomationAccountName 'ProDSCAA'
+AADscMetaConfiguration -NodeName 'S12R2-01' -RegistrationKey $registrationInfo.PrimaryKey -EndPointURL $registrationInfo.Endpoint -Verbose

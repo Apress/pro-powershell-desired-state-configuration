@@ -1,0 +1,1 @@
+Start-DscConfiguration -Path C:\scripts\DemoWebServer -Verbose -Wait

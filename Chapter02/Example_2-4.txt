@@ -1,0 +1,29 @@
+/*
+@TargetNode='S16-01'
+@GeneratedBy=Administrator
+@GenerationDate=07/04/2017 09:42:23
+@GenerationHost=S16-JB-01
+*/
+
+instance of MSFT_FileDirectoryConfiguration as $MSFT_FileDirectoryConfiguration1ref
+{
+    ResourceID = "[File]FileCopyInstance1";
+    Type = "File";
+    Ensure = "Present";
+    Contents = "Version:1.0.0.0";
+    DestinationPath = "C:\\Scripts\\build.tag";
+    ModuleName = "PSDesiredStateConfiguration";
+    SourceInfo = "::7::9::File";
+    ModuleVersion = "1.0";
+    ConfigurationName = "FileCopyConfiguration";
+};
+instance of OMI_ConfigurationDocument
+{
+    Version="2.0.0";
+    MinimumCompatibleVersion = "1.0.0";
+    CompatibleVersionAdditionalProperties= {"Omi_BaseResource:ConfigurationName"};
+    Author="Administrator";
+    GenerationDate="07/04/2017 09:42:23";
+    GenerationHost="S16-JB-01";
+    Name="FileCopyConfiguration";
+};

@@ -1,0 +1,1 @@
+Mofcomp.exe -check HostsFile.Schema.mof

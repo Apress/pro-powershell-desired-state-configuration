@@ -1,0 +1,8 @@
+$localRepository = @{
+    Name               = 'ProDscRepo'
+    SourceLocation     = '\\S16-JB\ProDSCRepo'
+    PublishLocation    = '\\S16-JB\ProDSCRepo'
+    InstallationPolicy = 'Trusted'
+}
+
+Register-PSRepository @localRepository

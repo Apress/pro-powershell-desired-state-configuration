@@ -1,0 +1,1 @@
+Test-WSMan -ComputerName $container.Config.Hostname

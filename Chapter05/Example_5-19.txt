@@ -1,0 +1,43 @@
+Configuration WebDBDemo
+{
+    Import-DscResource -ModuleName PsDscResources -Name Archive
+    Import-DscResource -ModuleName PSDesiredStateConfiguration -Name WindowsFeature
+    
+    #Add what is specific to web server role
+    Node $AllNodes.Where{$_.Role -eq 'WebServer'}.NodeName
+    {
+        WindowsFeature WebServer
+        {
+            Name = 'Web-Server'
+            IncludeAllSubFeature = $true
+            Ensure = 'Present'
+        }
+    }
+
+    #Add what is specific to DB server role
+    Node $AllNodes.Where{$_.Role -eq 'DBServer'}.NodeName
+    {
+        WindowsFeature NET35
+        {
+            Name = 'NET-Framework-Core'
+            Source = $Node.OSSourcePath
+            Ensure = 'Present'
+        }
+    }
+
+    #Add configuration that is common across but may have separate environment data
+    Node $AllNodes.NodeName
+    {
+        $NodeRole = $Node.Role
+        $NodeEnvironment = $Node.Environment
+
+        Archive SetupScripts
+        {
+            Path = $ConfigurationData.EnvironmentData.$NodeRole.$NodeEnvironment.ScriptsPath
+            Destination = $Node.ScriptDestinationPath
+            Force = $true            
+        }
+    }
+}
+
+WebDBDemo -ConfigurationData C:\Scripts\ConfigurationData.psd1 -Verbose

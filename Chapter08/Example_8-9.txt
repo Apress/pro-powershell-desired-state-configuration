@@ -1,0 +1,1 @@
+New-SelfSignedCertificate -DnsName S16-Pull-02.psdsc.lab -Type SSLServerAuthentication -CertStoreLocation Cert:\LocalMachine\My

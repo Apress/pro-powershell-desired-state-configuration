@@ -1,0 +1,64 @@
+$cert = [System.Security.Cryptography.X509Certificates.X509Certificate2]::new()
+$certFile = 'C:\publicKeys\S16-01.cer'
+$cert.Import($certFile)
+
+$configData = @{
+    AllNodes = @(
+        @{
+            NodeName = 'S16-01'
+            CertificateFile = $certFile
+            Thumbprint = $cert.Thumbprint
+            PsDscAllowDomainUser = $true
+        }
+    )
+}
+
+[DSCLocalConfigurationManager()]
+configuration SMBPullClient
+{
+    param
+    (
+        [Parameter()]
+        [String]
+        $NodeName = 'localhost',
+
+        [Parameter(Mandatory = $true)]
+        [String]
+        $ConfigurationID,
+
+        [Parameter(Mandatory = $true)]
+        [String]
+        $PullSvcSMBShare,
+
+        [Parameter(Mandatory = $true)]
+        [psCredential]
+        $SmbCredential
+    )
+
+    Node $AllNodes.NodeName
+    {
+        Settings
+        {
+            RefreshMode     = 'Pull'
+            ConfigurationID = $ConfigurationID
+            CertificateID = $cert.Thumbprint
+        }
+
+        ConfigurationRepositoryShare SMBPullSvc
+        {
+            SourcePath = $PullSvcSMBShare
+            Credential = $SmbCredential
+        }
+
+        ResourceRepositoryShare SMBPullSvc
+        {
+            SourcePath = $PullSvcSMBShare
+            Credential = $SmbCredential
+        }
+    }
+}
+
+SMBPullClient -ConfigurationID '32549046-1f4f-4787-93c0-84cb6387f756' `
+                -PullSvcSMBShare '\\s16-pull-01\SMBpull' `
+                -SmbCredential (Get-Credential -Message 'Enter credentials to access SMB share ...') `
+                -ConfigurationData $configData

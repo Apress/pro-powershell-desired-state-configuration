@@ -1,0 +1,1 @@
+FileCopyConfiguration -OutputPath C:\configurations\ -Verbose

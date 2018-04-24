@@ -1,0 +1,16 @@
+# Create the folder structure for the module
+$null = New-Item -Path .\ProDSCJEA\RoleCapabilities -ItemType Directory -Force
+
+# Create the role capability file
+$guid = (New-Guid).Guid
+$roleCapability = @"
+@{
+    GUID = `'$guid`'
+    Author = 'DSCFan'
+    CompanyName = 'The Awesome DSC Inc.'
+    Copyright = '(c) 2018 DSCFan. All rights reserved.'
+    VisibleCmdlets = 'PSDesiredStateConfiguration\Get-*'
+}
+"@
+
+$roleCapability | Out-File -FilePath .\ProDSCJEA\RoleCapabilities\ProDscGet.psrc

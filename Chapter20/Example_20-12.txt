@@ -1,0 +1,1 @@
+Invoke-Command -ContainerId $container.Id -ScriptBlock { Get-ChildItem -Path C:\Windows\Temp } -RunAsAdministrator

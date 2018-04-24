@@ -1,0 +1,2 @@
+Invoke-Command -ComputerName S16-01, S16-02 -ScriptBlock { Install-Module -Name PSDscResources -RequiredVersion 2.8.0.0 -Force } -Verbose
+Invoke-Command -ComputerName S16-01, S16-02 -ScriptBlock { Get-Module -Name PSDscResources -ListAvailable } -Verbose

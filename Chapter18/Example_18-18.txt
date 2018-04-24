@@ -1,0 +1,59 @@
+[DscLocalConfigurationManager()]
+Configuration GCEDscMetaConfig
+{
+
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String]
+        $RegistrationUrl,
+
+        [Parameter(Mandatory = $True)]
+        [String]
+        $RegistrationKey,
+
+        [Parameter(Mandatory = $true)]
+        [String[]]
+        $ConfigurationNames
+
+    )
+
+    Node localhost
+    {
+
+        Settings
+        {
+            RefreshMode = 'Pull'
+        }
+
+        ConfigurationRepositoryWeb AzureAutomationDSC
+        {
+            ServerUrl = $RegistrationUrl
+            RegistrationKey = $RegistrationKey
+            ConfigurationNames = $ConfigurationNames
+        }
+
+        ResourceRepositoryWeb AzureAutomationDSC
+        {
+            ServerUrl = $RegistrationUrl
+            RegistrationKey = $RegistrationKey
+        }
+
+        ReportServerWeb AzureAutomationDSC
+        {
+            ServerUrl = $RegistrationUrl
+            RegistrationKey = $RegistrationKey
+        }
+    }
+}
+
+$Params = @{
+    RegistrationUrl    = 'Endpoint-URL-Here'
+    RegistrationKey    = 'Registration-Key-Here'
+    ConfigurationNames = 'webserver.localhost'
+    OutputPath         = "$env:TEMP\MetaConfig"
+}
+
+GCEDscMetaConfig @Params
+
+Set-DscLocalConfigurationManager -Path "$env:TEMP\MetaConfig" -Verbose

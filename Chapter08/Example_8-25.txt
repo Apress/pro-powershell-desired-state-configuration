@@ -1,0 +1,20 @@
+[DSCLocalConfigurationManager()]
+configuration DisabledRefreshmode
+{
+    param
+    (
+        [Parameter()]
+        [String]
+        $NodeName = 'localhost'
+    )
+
+    Node $NodeName
+    {
+        Settings
+        {
+            RefreshMode     = 'Disabled'
+        }
+    }
+}
+
+DisabledRefreshmode -NodeName 'S16-01' 

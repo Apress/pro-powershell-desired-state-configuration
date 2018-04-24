@@ -1,0 +1,48 @@
+PS C:\scripts\dockerbuild> docker build .
+Sending build context to Docker daemon  6.144kB
+
+Step 1/3 : FROM microsoft/windowsservercore
+    ---> 1a599239a62c
+Step 2/3 : ADD containerdsc.ps1 /windows/temp/containerdsc.ps1
+    ---> 036f64eb0f12
+Removing intermediate container 0b8e40f872d9
+Step 3/3 : RUN powershell.exe -executionpolicy bypass c:\windows\temp\containerdsc.ps1
+    ---> Running in b2c0090ddf47
+
+    Directory: C:\Windows\Temp
+
+Mode                LastWriteTime         Length Name                          
+----                -------------         ------ ----                          
+-a----        2/24/2018  10:54 PM           2074 localhost.mof                 
+VERBOSE: Perform operation 'Invoke CimMethod' with following parameters, 
+''methodName' = SendConfigurationApply,'className' = 
+MSFT_DSCLocalConfigurationManager,'namespaceName' = 
+root/Microsoft/Windows/DesiredStateConfiguration'.
+VERBOSE: An LCM method call arrived from computer B2C0090DDF47 with user sid 
+S-1-5-93-2-1.
+VERBOSE: [B2C0090DDF47]: LCM:  [ Start  Set      ]
+VERBOSE: [B2C0090DDF47]: LCM:  [ Start  Resource ]  
+[[WindowsFeature]NET-Framework-45-Core]
+VERBOSE: [B2C0090DDF47]: LCM:  [ Start  Test     ]  
+[[WindowsFeature]NET-Framework-45-Core]
+VERBOSE: [B2C0090DDF47]:                            
+[[WindowsFeature]NET-Framework-45-Core] The operation 'Get-WindowsFeature' 
+started: NET-Framework-45-Core
+VERBOSE: [B2C0090DDF47]:                            
+[[WindowsFeature]NET-Framework-45-Core] The operation 'Get-WindowsFeature' 
+succeeded: NET-Framework-45-Core
+VERBOSE: [B2C0090DDF47]: LCM:  [ End    Test     ]  
+[[WindowsFeature]NET-Framework-45-Core]  in 2.1920 seconds.
+VERBOSE: [B2C0090DDF47]: LCM:  [ Skip   Set      ]  
+[[WindowsFeature]NET-Framework-45-Core]
+VERBOSE: [B2C0090DDF47]: LCM:  [ End    Resource ]  
+[[WindowsFeature]NET-Framework-45-Core]
+VERBOSE: [B2C0090DDF47]: LCM:  [ End    Set      ]
+VERBOSE: [B2C0090DDF47]: LCM:  [ End    Set      ]    in  8.6760 seconds.
+VERBOSE: Operation 'Invoke CimMethod' complete.
+VERBOSE: Time taken for configuration job to complete is 9.849 seconds
+
+
+    ---> 58a66aa850d5
+Removing intermediate container b2c0090ddf47
+Successfully built 58a66aa850d5

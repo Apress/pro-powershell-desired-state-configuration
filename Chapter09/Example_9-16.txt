@@ -1,0 +1,35 @@
+[DSCLocalConfigurationManager()]
+configuration oDataHTTPSReportClient
+{
+    param
+    (
+        [Parameter()]
+        [String[]]
+        $NodeName = 'localhost',
+    
+        [Parameter(Mandatory = $true)]
+        [String]
+        $RegistrationKey,
+    
+        [Parameter(Mandatory = $true)]
+        [String]
+        $PullSvcEndpoint
+    )
+    
+    Node $NodeName
+    {
+        Settings
+        {
+            RefreshMode        = 'Push'
+        }
+
+        ReportServerWeb HTTPSReport
+        {
+            ServerURL = $PullSvcEndpoint
+            RegistrationKey = $RegistrationKey
+        }
+    }
+}
+
+$nodes = @('S12R2-01','S12R2-02')
+oDataHTTPSReportClient -NodeName $nodes -RegistrationKey '713c4332-f12c-4008-9435-3329b97a27a8' -PullSvcEndpoint 'https://s16-pull-01:8080/PSDSCPullServer.svc/'

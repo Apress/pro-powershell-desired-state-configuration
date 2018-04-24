@@ -1,0 +1,1 @@
+docker container run -d --name winservercore microsoft/windowsservercore powershell.exe -command { while(1) { sleep 1000}}

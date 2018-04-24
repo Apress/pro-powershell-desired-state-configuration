@@ -1,0 +1,27 @@
+instance of MSFT_RoleResource as $MSFT_RoleResource1ref
+{
+ResourceID = "[WindowsFeature]WebServer";
+ IncludeAllSubFeature = True;
+ Ensure = "Present";
+ SourceInfo = "C:\\Scripts\\WebDBConfig.ps1::9::9::WindowsFeature";
+ Name = "Web-Server";
+ ModuleName = "PSDesiredStateConfiguration";
+
+ModuleVersion = "1.0";
+
+ ConfigurationName = "WebDBDemo";
+
+};
+instance of MSFT_Archive as $MSFT_Archive1ref
+{
+ResourceID = "[Archive]SetupScripts";
+ Path = "\\\\S16-JB\\Share\\Websetup-Prod.zip";
+ Destination = "C:\\Scripts";
+ SourceInfo = "C:\\Scripts\\WebDBConfig.ps1::34::9::Archive";
+ Force = True;
+ ModuleName = "PSDscResources";
+ ModuleVersion = "2.8.0.0";
+
+ ConfigurationName = "WebDBDemo";
+
+};

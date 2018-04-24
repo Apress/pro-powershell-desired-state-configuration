@@ -1,0 +1,2 @@
+Get-CimClass -Namespace root/Microsoft/Windows/DesiredStateConfigurationProxy -ClassName MSFT_DscProxy | 
+    Select-Object -ExpandProperty CimClassMethods

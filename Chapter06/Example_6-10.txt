@@ -1,0 +1,6 @@
+$env:PSModulePath (folder)
+    |- ResourceModuleName (folder)
+        |- DSCResources (folder)
+            |- ResourceName (folder)
+                |- ResourceName.psm1 (file, required)
+                |- ResourceName.schema.mof (file, required)

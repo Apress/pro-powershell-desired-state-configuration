@@ -1,0 +1,2 @@
+$Node = Get-AzureRmAutomationDscNode -ResourceGroupName $resourceGroupName -AutomationAccountName 'ProDscAA' -Name avm-s16-05
+Get-AzureRmAutomationDscNodeReport -ResourceGroupName $resourceGroupName -AutomationAccountName 'ProDscAA' -NodeId $Node.Id

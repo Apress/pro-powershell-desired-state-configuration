@@ -1,0 +1,3 @@
+$projectID = 'prodsc-gcp-01'
+$gceInstance = Get-GceInstance -Name prodscgce2 -Project $projectID
+Set-GceInstance -Object $gceInstance -RemoveMetadata 'windows-startup-script-url' 

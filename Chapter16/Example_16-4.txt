@@ -1,0 +1,5 @@
+Invoke-CimMethod -ComputerName S16-Pull-01 `
+                    -Namespace root/Microsoft/Windows/DesiredStateConfiguration `
+                    -ClassName MSFT_DSCLocalConfigurationManager `
+                    -MethodName SendConfiguration `
+                    -Arguments @{ConfigurationData = $configurationData; Force = $true}

@@ -1,0 +1,22 @@
+{
+    "AWSTemplateFormatVersion": "version date",
+    "Description": "JSON string",
+    "Metadata": {
+        templatemetadata
+    },
+    "Parameters": {
+        setofparameters
+    },
+    "Mappings": {
+        setofmappings
+    },
+    "Conditions": {
+        setofconditions
+    },
+    "Resources": {
+        setofresources
+    },
+    "Outputs": {
+        setofoutputs
+    }
+} 

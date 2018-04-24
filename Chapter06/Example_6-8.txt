@@ -1,0 +1,10 @@
+$manifestParams = @{
+    Path          = '.\SharePointConfiguration\SharePointConfiguration.psd1'
+    Author        = 'DSCFan'
+    Description   = 'Composite DSC resources for SharePoint development environment.'
+    GUID          = (New-GUID).Guid
+    ModuleVersion = '1.0.0.0'
+    CompanyName   = 'The Awesome DSC Inc.' 
+}
+
+New-ModuleManifest @manifestParams -Verbose

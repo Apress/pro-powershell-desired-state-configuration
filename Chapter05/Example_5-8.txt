@@ -1,0 +1,13 @@
+/*
+@TargetNode='S16-01'
+@GeneratedBy=administrator
+@GenerationDate=08/21/2017 16:03:18
+@GenerationHost=S16-JB
+*/
+
+instance of MSFT_Credential as $MSFT_Credential1ref
+{
+Password = "P0wer$hell1234";
+ UserName = "psdsc\\administrator";
+
+};

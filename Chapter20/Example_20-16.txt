@@ -1,0 +1,10 @@
+if (-not (Test-Path -Path C:\scripts\dockerbuild))
+{
+    $null = New-Item -Path C:\scripts\dockerbuild -ItemType Directory -force
+}
+
+@'
+FROM microsoft/windowsservercore
+ADD containerdsc.ps1 /windows/temp/containerdsc.ps1
+RUN powershell.exe -executionpolicy bypass c:\windows\temp\containerdsc.ps1
+'@ | Out-File C:\scripts\dockerbuild\Dockerfile -Encoding utf8 -Force

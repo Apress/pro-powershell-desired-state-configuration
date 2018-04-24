@@ -1,0 +1,31 @@
+Configuration DSCNonAdminOperation
+{
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String]
+        $User
+    )
+    
+    Import-DSCResource -ModuleName WmiNamespaceSecurity -ModuleVersion 0.2.0
+    Import-DSCResource -ModuleName PSDesiredStateConfiguration -ModuleVersion 1.1
+    
+    WMINamespaceSecurity DesiredStateConfiguration
+    {
+        Path = 'root/Microsoft/Windows/DesiredStateConfiguration'
+        AppliesTo = 'Self'
+        Principal = $User
+        Permission = 'Enable', 'MethodExecute', 'RemoteAccess'
+        AccessType = 'Allow'
+        Ensure = 'Present'
+    }
+        
+    Group RemoteManagement
+    {
+        GroupName = 'Remote Management Users'
+        MembersToInclude = $User
+        Ensure = 'Present'
+    }
+}
+
+DSCNonAdminOperation -User 'psdsc\ravi'

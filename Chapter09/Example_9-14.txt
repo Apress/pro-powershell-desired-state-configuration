@@ -1,0 +1,1 @@
+Test-DscConfiguration -ReferenceConfiguration .\OSConfig\S16-02.mof -ComputerName S16-01, S16-02

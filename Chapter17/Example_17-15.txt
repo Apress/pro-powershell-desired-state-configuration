@@ -1,0 +1,1 @@
+Import-AzureRmAutomationDscNodeConfiguration -AutomationAccountName 'ProDscAA' -ResourceGroupName $resourceGroupName -ConfigurationName FailoverCluster -Path C:\Scripts\FailoverCluster\localhost.mof -Force

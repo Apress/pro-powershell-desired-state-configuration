@@ -1,0 +1,14 @@
+Configuration ForceModuleImportDemo
+{
+	Import-DscResource -Module ForceModuleImportDemo
+
+	Node localhost
+	{
+		ForceModuleImport Demo
+		{
+			DummyKey = "DSC is fun!"
+		}
+	}
+}
+
+ForceModuleImportDemo

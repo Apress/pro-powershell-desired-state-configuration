@@ -1,0 +1,10 @@
+$resourceId = '[WindowsFeature]FailoverCluster'    
+$buf = [Text.Encoding]::Unicode.GetBytes($resourceId)
+$data = [System.Convert]::ToBase64String($buf)
+
+$computerName = 'S16-JB'
+
+$result = Invoke-WSManAction -ResourceURI http://schemas.microsoft.com/wbem/wsman/1/wmi/root/microsoft/windows/DesiredStateConfigurationProxy/MSFT_DscProxy `
+                -action GetResourceState -ComputerName $computerName -valueset @{ConfigurationData = "$data" } `
+                -Authentication None
+$result.State

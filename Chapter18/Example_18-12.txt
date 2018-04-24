@@ -1,0 +1,4 @@
+$cimSessionOptions = New-CimSessionOption -SkipCACheck -SkipCNCheck -UseSsl -Verbose
+$cimsession = New-CimSession -ComputerName 35.194.248.7 -Credential (Get-Credential) -SessionOption $cimSessionOptions 
+
+Get-DscConfiguration -CimSession $cimsession

@@ -1,0 +1,22 @@
+#Get the certificate thumbprint
+$requiredCertificate = Get-ChildItem -Path Cert:\LocalMachine\My | 
+                        Where-Object { 
+                            ($_.Subject -eq "CN=${env:COMPUTERNAME}") -and `
+                            ($_.EnhancedKeyUsageList.FriendlyName -contains 'Document Encryption') 
+                        }
+
+#Define meta configuration
+[DscLocalConfigurationManager()]
+Configuration CertificateConfig
+{
+    Settings
+    {
+        CertificateID = $requiredCertificate.Thumbprint
+    }
+}
+
+#Compile meta configuration
+CertificateConfig -OutputPath C:\LCMConfig -verbose
+
+#Enact LCM Configuration
+Set-DscLocalConfigurationManager -Path C:\LCMConfig -Force -Verbose

@@ -1,0 +1,1 @@
+Get-DscResource -Module PSDesiredStateConfiguration | Where-Object { $_.ImplementedAs -eq 'Composite' }

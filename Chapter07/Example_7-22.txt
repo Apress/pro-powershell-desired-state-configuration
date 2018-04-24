@@ -1,0 +1,32 @@
+Context 'A hosts file entry exists and it should not.' {
+
+    $testParameters = @{
+        HostName  = 'TestServer102'
+        IPAddress = '172.16.102.102'
+        Ensure    = 'Absent'
+        Verbose   = $true
+    }
+
+    Mock -CommandName Get-Content -MockWith {
+        return @(
+            '# An example of a host file',
+            '',
+            '127.0.0.1  localhost',
+            "$($testParameters.IPAddress)         $($testParameters.HostName)",
+            ''
+        )
+    }
+
+    It 'Get function should return Ensure as present.' {
+        (Get-TargetResource @testParameters).Ensure | Should Be 'Present'	
+    }
+
+    It 'Test function should return false.' {
+        Test-TargetResource @testParameters | Should Be $false
+    }
+
+    It 'Set function should call Set-Content only once.' {
+        Set-TargetResource @testParameters
+        Assert-MockCalled -CommandName Set-Content -Times 1
+    }
+}

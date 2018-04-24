@@ -1,0 +1,17 @@
+Configuration ConfigurationName
+{
+    #Module import using Import-DscResource
+    #This has different possible parameters
+    Import-DscResource -ModuleName ModuleName
+
+    #Optional Node block with one or more node names
+    Node @(NodeNameArray) #Or a string literal
+    {
+        #One or more resource instances
+        ResourceName ResourceInstanceName
+        {
+            KeyProperty = Value
+            AnotherProperty = AnotherValue
+        }
+    }
+}

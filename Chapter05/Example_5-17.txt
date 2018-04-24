@@ -1,0 +1,39 @@
+Configuration WebDBDemo
+{
+    Import-DscResource -ModuleName PsDscResources -Name Archive
+    Import-DscResource -ModuleName PSDesiredStateConfiguration -Name WindowsFeature
+
+    Node @('WebServer01', 'WebServer02', 'WebServer03', 'WebServer04')
+    {
+        WindowsFeature WebServer
+        {
+            Name = 'Web-Server'
+            IncludeAllSubFeature = $true
+            Ensure = 'Present'
+        }
+        
+        Archive SetupScripts
+        {
+            Path = '\\S16-JB\Share\Websetup.zip'
+            Destination = 'C:\Scripts'
+            Force = $true
+        }
+    }
+
+    Node @('DBServer01','DBServer02')
+    {
+        WindowsFeature NET35
+        {
+            Name = 'NET-Framework-Core'
+            Source = '\\S16-JB\Share\S16OS\Sources\Sxs'
+            Ensure = 'Present'
+        }
+
+        Archive SetupScripts
+        {
+            Path = '\\S16-JB\Share\DBSetup.zip'
+            Destination = 'C:\Scripts'
+            Force = $true
+        }
+    }
+}

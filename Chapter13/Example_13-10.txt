@@ -1,0 +1,2 @@
+$certificate = Get-ChildItem Cert:\CurrentUser\My -CodeSigningCert
+Set-AuthenticodeSignature -Certificate $certificate -FilePath C:\Scripts\DemoWebServer\S16-01.mof -IncludeChain all -Force

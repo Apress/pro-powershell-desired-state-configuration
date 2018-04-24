@@ -1,0 +1,14 @@
+Context 'A hosts file entry does not exist. It should.' {	
+    It 'Get function should return Ensure as absent.' {
+        (Get-TargetResource @testParameters).Ensure | Should Be 'Absent'	
+    }
+
+    It 'Test function should return false.' {
+        Test-TargetResource @testParameters | Should Be $false
+    }
+
+    It 'Set function should add the hosts file entry.' {
+        Set-TargetResource @testParameters
+        Assert-MockCalled -CommandName Add-Content
+    }
+}

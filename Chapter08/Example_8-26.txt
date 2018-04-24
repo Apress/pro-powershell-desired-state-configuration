@@ -1,0 +1,30 @@
+[DSCLocalConfigurationManager()]
+Configuration PushClient
+{
+    param
+    (
+        [Parameter()]
+        [String]
+        $NodeName = 'localhost',
+
+        [Parameter(Mandatory = $true)]
+        [String]
+        $PullSvcEndpoint
+    )
+
+    Node $NodeName
+    {
+        Settings
+        {
+            RefreshMode     = 'Push'
+        }
+
+        ResourceRepositoryWeb oDATAPullSvc
+        {
+            ServerURL = $PullSvcEndpoint
+            AllowUnsecureConnection = $true
+        }
+    }
+}
+
+PushClient  -PullSvcEndpoint 'http://S16-PULL-01:9090/PSDSCPullServer.svc'

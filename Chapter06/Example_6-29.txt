@@ -1,0 +1,102 @@
+if (Test-Path "${PSScriptRoot}\${PSUICulture}")
+{
+    Import-LocalizedData -BindingVariable LocalizedData -filename ProDsc.psd1 `
+                            -BaseDirectory "${PSScriptRoot}\${PSUICulture}"
+} 
+else
+{
+    #fallback to en-US
+    Import-LocalizedData -BindingVariable LocalizedData -filename ProDsc.psd1 `
+                            -BaseDirectory "${PSScriptRoot}\en-US"
+}
+
+enum Ensure 
+{ 
+    Absent 
+    Present 
+}
+
+[DscResource()]
+class HostsFile
+{
+    [DscProperty(Key)]
+    [String]
+    $HostName
+
+    [DscProperty(Mandatory = $true)]
+    [String]
+    $IPAddress
+
+    [DscProperty()]
+    [ValidateSet('Present','Absent')]
+    [String]
+    $Ensure
+
+    [Bool] Test()
+    {
+        Write-Verbose -Message $Script:localizedData.CheckingHostsFileEntry
+        $content = Get-Content "${env:windir}\system32\drivers\etc\hosts" -ErrorAction SilentlyContinue
+        $entryExist = ($content -match "^\s*$($this.IPAddress)\s+$($this.HostName)\s*$")
+        if ($this.Ensure -eq [Ensure]::Present)
+        {
+            if ($entryExist)
+            {
+                Write-Verbose -Message ($Script:localizedData.HostsFileEntryFound -f $this.HostName, $this.IPAddress)
+                return $true
+            }
+            else
+            {
+                Write-Verbose -Message ($Script:localizedData.HostsFileEntryNotFound -f $this.HostName, $this.IPAddress)
+                return $false
+            }
+        }
+        else
+        {
+            if ($entryExist)
+            {
+                Write-Verbose -Message ($Script:localizedData.HostsFileShouldNotExist -f $this.HostName, $this.IPAddress)
+                return $false
+            }
+            else
+            {
+                Write-Verbose -Message $Script:localizedData.HostsFileEntryDoesNotExist
+                return $true
+            }
+        }
+    }
+
+    [Void] Set()
+    {
+        $hostEntry = "`n$($this.IPAddress)`t$($this.HostName)"
+
+        if ($this.Ensure -eq [Ensure]::Present)
+        {
+            Write-Verbose -Message ($Script:localizedData.CreatingHostsFileEntry -f $this.HostName, $this.IPAddress)
+            Add-Content -Path "${env:windir}\system32\drivers\etc\hosts" -Value $hostEntry -Force -Encoding ASCII
+        }
+        else
+        {
+            Write-Verbose -Message ($Script:localizedData.RemovingHostsFileEntry -f $this.HostName, $this.IPAddress)
+            $content = ((Get-Content "${env:windir}\system32\drivers\etc\hosts") -notmatch "^\s*$")
+            $noMatchContent = $content -notmatch "^\s*$($this.IPAddress)\s+$($this.HostName)\s*$"
+            $noMatchContent | Set-Content "${env:windir}\system32\drivers\etc\hosts"
+        }
+    }
+
+    [HostsFile] Get()
+    {
+        Write-Verbose -Message $Script:localizedData.CheckingHostsFileEntry
+        if ((Get-Content "${env:windir}\system32\drivers\etc\hosts" -ErrorAction SilentlyContinue) -match "^\s*$($this.IPAddress)\s+$($this.HostName)\s*$")
+        {
+            Write-Verbose -Message ($Script:localizedData.HostsFileEntryFound -f $this.HostName, $this.IPAddress)
+            $this.Ensure = [Ensure]::Present
+        }
+        else
+        {
+            Write-Verbose -Message ($Script:localizedData.HostsFileEntryNotFound -f $this.HostName, $this.IPAddress)
+            $this.Ensure = [Ensure]::Absent
+        }
+
+        return $this
+    }
+}

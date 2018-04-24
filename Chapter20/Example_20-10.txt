@@ -1,0 +1,1 @@
+docker cp C:\scripts\ContainerCopyDemo\localhost.mof winservercore:/windows/temp/localhost.mof

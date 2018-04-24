@@ -1,0 +1,1 @@
+New-Item -Path ProDSC\DSCResources\HostsFile -Force -ItemType Directory

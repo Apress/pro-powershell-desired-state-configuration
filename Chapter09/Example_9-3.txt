@@ -1,0 +1,1 @@
+$AllDscLogs = Get-WinEvent -LogName 'Microsoft-windows-dsc/operational','Microsoft-Windows-Dsc/Analytic','Microsoft-Windows-Dsc/Debug' -Oldest

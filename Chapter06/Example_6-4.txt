@@ -1,0 +1,1 @@
+tree /F /A (Get-DscResource -Module PSDesiredStateConfiguration -Name WindowsFeatureSet).ParentPath

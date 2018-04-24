@@ -1,0 +1,1 @@
+Get-CimInstance -Namespace root/Microsoft/Windows -ClassName __NAMESPACE | Format-Wide

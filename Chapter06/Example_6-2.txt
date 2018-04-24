@@ -1,0 +1,38 @@
+Configuration HyperVNode
+{
+    Import-DscResource -ModuleName PSDesiredStateConfiguration -ModuleVersion 1.0
+
+    WindowsFeature Hyper-V
+    {
+        Name = 'Hyper-V'
+        IncludeAllSubFeature = $true
+        Ensure = 'Present'
+    }
+
+    WindowsFeature FailoverCluster
+    {
+        Name = 'Failover-Clustering'
+        IncludeAllSubFeature = $true
+        Ensure = 'Present'
+    }
+
+    WindowsFeature DataCenterBridging
+    {
+        Name = 'Data-Center-Bridging'
+        IncludeAllSubFeature = $true
+        Ensure = 'Present'
+    }
+
+    WindowsFeature RSATHyper-V
+    {
+        Name = 'RSAT-Hyper-V-Tools'
+        Ensure = 'Present'
+    }
+
+    WindowsFeature RSATClustering
+    {
+        Name = 'RSAT-Clustering'
+        IncludeAllSubFeature = $true
+        Ensure = 'Present'
+    }
+}

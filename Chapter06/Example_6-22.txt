@@ -1,0 +1,90 @@
+enum Ensure 
+{ 
+	Absent 
+	Present 
+}
+	
+[DscResource()]
+class HostsFile
+{
+	[DscProperty(Key)]
+	[String]
+	$HostName
+	
+	[DscProperty(Mandatory = $true)]
+	[String]
+	$IPAddress
+	
+	[DscProperty()]
+	[ValidateSet('Present','Absent')]
+	[String]
+	$Ensure
+	
+	[Bool] Test()
+	{
+		Write-Verbose -Message "Checking if the hosts file entry for $($this.HostName) and $($this.IPAddress) exists or not."
+		$content = Get-Content "${env:windir}\system32\drivers\etc\hosts" -ErrorAction SilentlyContinue    
+		$entryExist = ($content -match "^\s*$($this.IPAddress)\s+$($this.HostName)\s*$")
+		if ($this.Ensure -eq [Ensure]::Present)
+		{
+			if ($entryExist)
+			{
+				Write-Verbose -Message "Hosts file entry exists for $($this.HostName) and $($this.IPAddress). Nothing to configure."
+				return $true
+			}
+			else
+			{
+				Write-Verbose -Message "Hosts file entry for for $($this.HostName) and $($this.IPAddress) does not exist while it should; it must be added."
+				return $false
+			}
+		}
+		else
+		{
+			if ($entryExist)
+			{
+				Write-Verbose -Message "Hosts file entry for for $($this.HostName) and $($this.IPAddress) exists while it should not; it must be removed."
+				return $false
+			}
+			else
+			{
+				Write-Verbose -Message "Hosts file entry for for $($this.HostName) and $($this.IPAddress) does not exist; nothing to configure."
+				return $true
+			}
+		}
+	}
+	
+	[Void] Set()
+	{
+		$hostEntry = "`n$($this.IPAddress)`t$($this.HostName)"
+	
+		if ($this.Ensure -eq [Ensure]::Present)
+		{
+			Write-Verbose -Message "Creating hosts file entry for for $($this.HostName) and $($this.IPAddress)"
+			Add-Content -Path "${env:windir}\system32\drivers\etc\hosts" -Value $hostEntry -Force -Encoding ASCII
+		}
+		else
+		{
+			Write-Verbose -Message "Removing hosts file entry for $($this.HostName) and $($this.IPAddress)."
+			$content = ((Get-Content "${env:windir}\system32\drivers\etc\hosts") -notmatch "^\s*$")
+			$noMatchContent = $content -notmatch "^\s*$($this.IPAddress)\s+$($this.HostName)\s*$"
+			$noMatchContent | Set-Content "${env:windir}\system32\drivers\etc\hosts"
+		}
+	}
+	
+	[HostsFile] Get()
+	{
+		Write-Verbose -Message "Checking if hosts file entry for for $($this.HostName) and $($this.IPAddress) exists or not"
+		if ((Get-Content "${env:windir}\system32\drivers\etc\hosts" -ErrorAction SilentlyContinue) -match "^\s*$($this.IPAddress)\s+$($this.HostName)\s*$")
+		{
+			Write-Verbose -Message "Hosts file entry for $this.HostName and $this.IPAddress exists."
+			$this.Ensure = [Ensure]::Present
+		}
+		else
+		{
+			Write-Verbose "Hosts file entry for for $($this.HostName) and $($this.IPAddress) does not exist"
+			$this.Ensure = [Ensure]::Absent
+		}
+	
+		return $this
+	}
+}

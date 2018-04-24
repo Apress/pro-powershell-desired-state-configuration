@@ -1,0 +1,2 @@
+.\GetCimClassProperty.ps1 -ClassName MSFT_DSCMetaConfiguration -Namespace root/microsoft/windows/desiredstateconfiguration | 
+            Select Name, CimType, AllowedValues

@@ -1,0 +1,47 @@
+[DSCLocalConfigurationManager()]
+configuration oDataHTTPPullClient
+{
+    param
+    (
+        [Parameter()]
+        [String]
+        $NodeName = 'localhost',
+
+        [Parameter(Mandatory = $true)]
+        [String]
+        $RegistrationKey,
+
+        [Parameter(Mandatory = $true)]
+        [String]
+        $PullSvcEndpoint,
+
+        [Parameter(Mandatory = $true)]
+        [String]
+        $ConfigNames
+    )
+
+    Node $NodeName
+    {
+        Settings
+        {
+            RefreshMode     = 'Pull'
+        }
+
+        ConfigurationRepositoryWeb HTTPPullSvc
+        {
+            ServerURL          = $PullSvcEndpoint
+            Registra/tionKey    = $RegistrationKey
+            ConfigurationNames = $ConfigNames
+            AllowUnsecureConnection = $true
+        }
+
+        ResourceRepositoryWeb HTTPPullSvc
+        {
+            ServerURL          = $PullSvcEndpoint
+            RegistrationKey    = $RegistrationKey
+            AllowUnsecureConnection = $true
+        }
+    }
+}
+
+oDataHTTPPullClient -NodeName 'S16-01' -RegistrationKey '32549046-1f4f-4787-93c0-84cb6387f756' -PullSvcEndpoint 'http://S16-PULL-01:8080/PSDSCPullServer.svc' -ConfigNames 'OSConfig'

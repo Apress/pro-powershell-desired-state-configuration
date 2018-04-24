@@ -1,0 +1,30 @@
+foreach ($node in 'S16-01','S16-02')
+{       
+    $session = New-PSSession -ComputerName $node
+    $certPath = 'C:\Certificates\ProDscSignature.cer'
+    $certStore = 'Cert:\LocalMachine\DSCStore'
+
+    Invoke-Command -Session $session -ScriptBlock {
+            #Create Certifcates folder
+            $certFolder = 'C:\Certificates'
+            if (-not (Test-Path -Path $certFolder))
+            {
+                $null = New-Item -Path $certFolder -ItemType Directory
+            }
+
+            #Create DSC Store
+            if (-not ($using:certStore))
+            {
+                $null = New-Item -Path $using:certStore -ItemType Directory
+            }
+    }
+    
+    #Copy the public key to target node
+    Copy-Item -Path $certPath -ToSession $session -Destination $certPath -Force
+
+    #Import the certificate
+    Invoke-Command -Session $session -ScriptBlock {        
+        Import-Certificate -FilePath $using:certPath -CertStoreLocation Cert:\LocalMachine\Root\
+        Import-Certificate -FilePath $using:certPath -CertStoreLocation $using:certStore
+    }
+}

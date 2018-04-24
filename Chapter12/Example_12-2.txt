@@ -1,0 +1,13 @@
+[DSCLocalConfigurationManager()]
+
+Configuration DebugSetting
+{
+    Settings
+    {
+        DebugMode = 'All'
+    }
+}
+
+DebugSetting
+
+Set-DscLocalConfigurationManager -Path DebugSetting

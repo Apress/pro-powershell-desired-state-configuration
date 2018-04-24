@@ -1,0 +1,11 @@
+if (Test-Path "${PSScriptRoot}\${PSUICulture}")
+{
+    Import-LocalizedData -BindingVariable LocalizedData -filename HostsFile.psd1 `
+                            -BaseDirectory "$PSScriptRoot\$PSUICulture"
+} 
+else
+{
+    #fallback to en-US
+    Import-LocalizedData -BindingVariable LocalizedData -filename HostsFile.psd1 `
+                            -BaseDirectory "$PSScriptRoot\en-US"
+}

@@ -1,0 +1,13 @@
+[DSCLocalConfigurationManager()]
+
+Configuration DebugSetting
+{
+    Settings
+    {
+        DebugMode = 'ForceModuleImport'
+    }
+}
+
+DebugSetting
+
+Set-DscLocalConfigurationManager -Path DebugSetting

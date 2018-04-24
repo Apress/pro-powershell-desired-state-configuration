@@ -1,0 +1,33 @@
+function Get-DscReport
+{
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String[]]
+        $NodeName,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $ReportEndpoint,
+
+        [Parameter()]
+        [Switch]
+        $UseTLS12
+    )
+
+    if ($UseTLS12)
+    {
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    }
+
+    foreach ($node in $NodeName)
+    {
+        $agentId = (Get-DscLocalConfigurationManager -CimSession $node).AgentId
+
+        $requestUri = "$ReportEndpoint/Nodes(AgentId='$agentId')/Reports"
+        
+        $nodeReport = (Invoke-RestMethod -Uri $requestUri -UseBasicParsing -Headers @{Accept = 'application/json';ProtocolVersion = '2.0'}).Value
+        return $nodeReport
+    }
+}

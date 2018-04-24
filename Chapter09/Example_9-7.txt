@@ -1,0 +1,1 @@
+$AllDscLogs | Group-Object { $_.Properties[0].Value } | Where-Object { $_.Group.LevelDisplayName -eq "Warning" }

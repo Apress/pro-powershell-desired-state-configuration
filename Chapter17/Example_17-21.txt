@@ -1,0 +1,5 @@
+$Node1 = Get-AzureRmAutomationDscNode -ResourceGroupName $resourceGroupName -AutomationAccountName 'ProDscAA' -Name 'S16-01'
+Set-AzureRmAutomationDscNode -AutomationAccountName 'ProDscAA' -NodeConfigurationName 'FailoverCluster.Localhost' -ResourceGroupName $resourceGroupName -Id $Node1.Id
+
+$Node2 = Get-AzureRmAutomationDscNode -ResourceGroupName $resourceGroupName -AutomationAccountName 'ProDscAA' -Name 'S16-02'
+Set-AzureRmAutomationDscNode -AutomationAccountName 'ProDscAA' -NodeConfigurationName 'FailoverCluster.Localhost' -ResourceGroupName $resourceGroupName -Id $Node2.Id

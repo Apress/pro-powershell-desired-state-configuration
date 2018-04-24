@@ -1,0 +1,26 @@
+Context 'A hosts file entry does not exist and it should not.' {
+
+    $testParameters = @{
+        HostName  = 'TestServer102'
+        IPAddress = '172.16.102.102'
+        Ensure    = 'Absent'
+        Verbose   = $true
+    }
+
+    Mock -CommandName Get-Content -MockWith {
+        return @(
+            '# An example of a host file',
+            '',
+            '127.0.0.1  localhost',
+            ''
+        )
+    }
+
+    It 'Get function should return Ensure as absent.' {
+        (Get-TargetResource @testParameters).Ensure | Should Be 'Absent'
+    }
+
+    It 'Test function should return true.' {
+        Test-TargetResource @testParameters | Should Be $true
+    }
+}

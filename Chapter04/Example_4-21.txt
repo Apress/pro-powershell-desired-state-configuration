@@ -1,0 +1,16 @@
+Configuration DemoGroupConfiguration
+{
+    Import-DscResource -ModuleName PSDscResources
+
+    Node @('S16-01','S16-02')
+    {
+        Group DemoGroup
+        {
+            GroupName = 'DemoGroup'
+            Description = 'Demo Group'
+            Ensure = 'Present'
+        }
+    }
+}
+
+DemoGroupConfiguration -OutputPath C:\DemoGroupConfiguration -Verbose

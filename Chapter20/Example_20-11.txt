@@ -1,0 +1,5 @@
+$containerID = (docker ps -aqf "name=winservercore")
+$container = (docker inspect $containerID) | ConvertFrom-Json
+
+$containerSession = New-PSSession -ContainerId $container.Id -RunAsAdministrator
+Copy-Item -Path C:\scripts\ContainerCopyDemo\localhost.mof -ToSession $containerSession -Destination C:\Windows\Temp -Force 

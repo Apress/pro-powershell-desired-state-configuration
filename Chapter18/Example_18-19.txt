@@ -1,0 +1,6 @@
+#Grant service account storage viewer role
+$projectID = 'prodsc-gcp-01'
+$project = (Get-GcpProject -Name $projectID).Where({$_.LifecycleState -eq 'ACTIVE'})
+$defaultSvcAccount = "$($project.ProjectNumber)-compute@developer.gserviceaccount.com"
+$null = Add-GcIamPolicyBinding -Project $projectID -ServiceAccount $defaultSvcAccount -Role roles/storage.objectAdmin
+$svcAccount = New-GceServiceAccountConfig -Email $defaultSvcAccount

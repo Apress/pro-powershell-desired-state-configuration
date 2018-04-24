@@ -1,0 +1,39 @@
+Describe 'Hosts file resource tests'
+    Context 'Get-TargetResource' {
+        It 'Hosts entry does not exist and it should return Ensure as Absent' {
+            #Write the test logic here
+        }
+
+        It 'Hosts entry exists and it should return Ensure as Present.' {
+            #Write the test logic here
+        }
+    }
+
+    Context 'Set-TargetResource' {
+        It 'Hosts entry does not exist and it should. It should be added.' {
+            #Write the test logic here
+        }
+
+        It 'Hosts entry exists and it should not. It should be removed.' {
+            #Write the test logic here
+        }
+    }
+
+    Context 'Test-TargetResource' { 
+        It 'Hosts entry does not exist and it should. Should return false.' {
+            #Write the test logic here
+        }
+
+        It 'Hosts entry does not exist and it should not. Should return true.' {
+            #Write the test logic here
+        }
+
+        It 'Hosts entry exists and it should not. Should return false.' {
+            #Write the test logic here
+        }
+
+        It '- Hosts entry exists and it should. Should return true.' {
+            #Write the test logic here
+        }
+    }
+}

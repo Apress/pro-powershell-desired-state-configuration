@@ -1,0 +1,1 @@
+Publish-Module -Name ProDSC -NuGetApiKey <apiKey>

@@ -1,0 +1,16 @@
+Configuration GCEDemo
+{   
+    Import-DscResource -ModuleName PSDesiredStateConfiguration -ModuleVersion 1.1
+
+    Node 'localhost'
+    {
+        WindowsFeature WebServer
+        {
+            Name = 'Web-Server'
+            Ensure = 'Present'
+        }
+    }
+}
+
+GCEDemo -OutputPath "$env:Temp\GCEDemo"
+Start-DscConfiguration -Wait -Verbose -Path "$env:Temp\GCEDemo"

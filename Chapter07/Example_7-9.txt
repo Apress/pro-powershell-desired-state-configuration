@@ -1,0 +1,20 @@
+Describe 'Tests that work on numbers' {
+    Context 'Tests for adding numbers' {
+        It "adds positive numbers" {
+            $sum = Add-Numbers 2 3
+            $sum | Should Be 5
+        }
+
+        It "adds negative numbers" {
+            $sum = Add-Numbers (-2) (-3)
+            $sum | Should Be (-5)
+        }
+    }
+
+    Context 'Tests for subtracting numbers' {
+        It "subtract positive numbers" {
+            $sum = Subtract-Numbers 9 5
+            $sum | Should Be 4
+        }
+    }		
+}

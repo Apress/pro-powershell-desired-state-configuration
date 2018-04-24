@@ -1,0 +1,14 @@
+Configuration AudioService
+{
+    Node S16-JB
+    {
+        Service AudioService
+        {
+            Name = 'AudioSrv'
+            State = 'Running'
+            Ensure = 'Present'
+        }
+    }
+}
+
+AudioService

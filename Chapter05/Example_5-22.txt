@@ -1,0 +1,10 @@
+Configuration IIS {
+    Import-DscResource –ModuleName 'PSDesiredStateConfiguration'
+
+    WindowsFeature WebServer
+    {
+        Name = 'Web-Server'
+        IncludeAllSubFeature = $true
+        Ensure = 'Present'
+    }
+}

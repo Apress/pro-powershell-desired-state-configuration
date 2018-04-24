@@ -1,0 +1,13 @@
+Context 'A hosts file entry does not exist. It should.' {
+    It 'Get function should return Ensure as absent.' {
+
+    }
+
+    It 'Test function should return false.' {
+
+    }
+
+    It 'Set function should add the hosts file entry.' {
+
+    }
+}

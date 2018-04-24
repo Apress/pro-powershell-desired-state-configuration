@@ -1,0 +1,5 @@
+$properties.Remove('Ensure')
+Invoke-DscResource -Name HostsFile `
+                    -Method Get `
+                    -ModuleName ProDsc `
+                    -Property $properties

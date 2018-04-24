@@ -1,0 +1,6 @@
+foreach ($item in (Get-ChildItem -Path C:\PublicKeys -Filter *.cer))
+{
+    $cert = [System.Security.Cryptography.X509Certificates.X509Certificate2]::new()
+    $cert.Import($item.FullName)
+    $cert
+}

@@ -1,0 +1,32 @@
+[DscLocalConfigurationManager()]
+Configuration LCMConfiguration
+{
+    Settings
+    {
+        CertificateID = '1DAEA5189FA2D927151C96C5F43F3DA13114573D'
+        RebootNodeIfNeeded = $true
+        ActionAfterReboot = 'ContinueConfiguration'
+    }
+
+    PartialConfiguration OSConfig
+    {
+        RefreshMode = 'Push'
+        Description = 'OS configuration fragment for Windows feature, host network, and domain join'
+    }
+
+    PartialConfiguration SQLConfig
+    {
+        RefreshMode = 'Push'
+        Description = 'SQL configuration fragment for SQL instance install and configuration.'
+        DependsOn = '[PartialConfiguration]OSConfig'
+    }
+
+    PartialConfiguration FirewallConfig
+    {
+        RefreshMode = 'Push'
+        Description = 'Firewall configuration fragment for OS and SQL instance hardnening.'
+        DependsOn = '[PartialConfiguration]SQLConfig'
+    }
+}
+
+LCMConfiguration

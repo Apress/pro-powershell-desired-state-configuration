@@ -1,0 +1,33 @@
+Configuration DemoGroupConfiguration
+{
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String]
+        $GroupName,
+        
+        [Parameter(Mandatory = $true)]
+        [String]
+        $Description,
+        
+        [Parameter()]
+        [String[]]
+        $Nodes = 'localhost'
+    )
+    Import-DscResource -ModuleName PSDscResources
+
+    Node $Nodes
+    {
+        Group DemoGroup
+        {
+            GroupName = $GroupName
+            Description = $Description
+            Ensure = 'Present'
+        }
+    }
+}
+
+DemoGroupConfiguration -OutputPath C:\DemoGroupConfiguration `
+                       -GroupName 'DemoGroup' `
+                       -Description 'Demo Group' `
+                       -Nodes 'S16-01','S16-02'
